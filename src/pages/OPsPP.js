@@ -18,7 +18,7 @@ export default function OPsPP() {
       setOPs(response.data);
     }
     loadOPs();
-  })
+  },[])
   
   return (
   

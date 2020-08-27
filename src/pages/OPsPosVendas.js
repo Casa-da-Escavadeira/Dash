@@ -18,7 +18,7 @@ export default function OPsPosVendas() {
       setOPs(response.data);
     }
     loadOPs();
-  })
+  },[])
   
   return (
   

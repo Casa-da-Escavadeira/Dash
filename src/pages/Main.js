@@ -22,7 +22,10 @@ export default function Main() {
           <button type="button">Solicitações de Compras</button>
         </Link>
         <Link to="/prodash">
-          <button type="button">Produtos</button>
+          <button type="button">Consulta de Produto</button>
+        </Link>
+        <Link to="/productregister">
+          <button type="button">Cadastro de Produtos</button>
         </Link>
         <Link to="/opspos">
           <button type="button">OPs para o Pós Vendas</button>

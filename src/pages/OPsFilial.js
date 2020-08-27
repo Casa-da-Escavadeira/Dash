@@ -18,7 +18,7 @@ export default function OPsFilial() {
       setOPs(response.data);
     }
     loadOPs();
-  })
+  },[])
   
   return (
   

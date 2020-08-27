@@ -124,7 +124,7 @@ export default function EstoquesGer() {
       setGS260A_01(response8.data);
     }
     loadEstoques();
-  });
+  },[]);
 
   return (
     <div className="main-container">
@@ -141,7 +141,7 @@ export default function EstoquesGer() {
 
         <tbody>
           {estoques.map(estoque => (
-            <tr>
+            <tr key={estoque.FILIAL.concat('', estoque.PRODUTO)}>
               <td>{estoque.FILIAL}</td>
               <td>{estoque.PRODUTO}</td>
               <td>{estoque.SALDO}</td>
@@ -167,7 +167,7 @@ export default function EstoquesGer() {
             </thead>
             <tbody>
               {PCs.map(pc => (
-                <tr>
+                <tr key={pc.PEDIDO.concat('', pc.PRODUTO)}>
                   <td>{pc.PEDIDO}</td>
                   <td>{pc.PRODUTO}</td>
                   <td>{pc.QTD}</td>
@@ -196,7 +196,7 @@ export default function EstoquesGer() {
             </thead>
             <tbody>
               {SCs.map(sc => (
-                <tr>
+                <tr key={sc.SC.concat('', sc.PRODUTO)}> 
                   <td>{sc.SC}</td>
                   <td>{sc.PRODUTO}</td>
                   <td>{sc.QTD}</td>
@@ -222,7 +222,7 @@ export default function EstoquesGer() {
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr key={"GS125M"}>
                 <td>GS125</td>
                 <td>9900001327</td>
                 {gs125_01.length > 0 ? (
@@ -235,7 +235,7 @@ export default function EstoquesGer() {
                   <td>0</td>
                 )}
               </tr>
-              <tr>
+              <tr key={"GS165M"}>
                 <td>GS165</td>
                 <td>9900000777</td>
                 {gs165_01.length > 0 ? (
@@ -248,7 +248,7 @@ export default function EstoquesGer() {
                   <td>0</td>
                 )}
               </tr>
-              <tr>
+              <tr key={"GS230M"}>
                 <td>GS230</td>
                 <td>9900000778</td>
                 {gs230_01.length > 0 ? (
@@ -261,7 +261,7 @@ export default function EstoquesGer() {
                   <td>0</td>
                 )}
               </tr>
-              <tr>
+              <tr key={"GS260M"}>
                 <td>GS260</td>
                 <td>9900001100</td>
                 {gs260_01.length > 0 ? (
@@ -291,7 +291,7 @@ export default function EstoquesGer() {
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr key={"GS125A"}>
                 <td>GS125</td>
                 <td>9900001335</td>
                 {gs125A_01.length > 0 ? (
@@ -304,7 +304,7 @@ export default function EstoquesGer() {
                   <td>0</td>
                 )}
               </tr>
-              <tr>
+              <tr key={"GS165A"}>
                 <td>GS165</td>
                 <td>9900000786</td>
                 {gs165A_01.length > 0 ? (
@@ -317,7 +317,7 @@ export default function EstoquesGer() {
                   <td>0</td>
                 )}
               </tr>
-              <tr>
+              <tr key={"GS230A"}>
                 <td>GS230</td>
                 <td>9900000821</td>
                 {gs230A_01.length > 0 ? (
@@ -330,7 +330,7 @@ export default function EstoquesGer() {
                   <td>0</td>
                 )}
               </tr>
-              <tr>
+              <tr key={"GS260A"}>
                 <td>GS260</td>
                 <td>9900001101</td>
                 {gs260A_01.length > 0 ? (

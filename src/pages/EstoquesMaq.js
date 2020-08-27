@@ -18,7 +18,7 @@ export default function EstoquesMaq() {
       setEstoques(response.data);
     }
     loadEstoques();
-  })
+  },[])
   
   return (
   
@@ -36,7 +36,7 @@ export default function EstoquesMaq() {
        
       <tbody>
       {estoques.map(estoque => (
-        <tr>
+        <tr key={estoque.FILIAL.concat('', estoque.PRODUTO)}>
           <td>{estoque.FILIAL}</td>
           <td>{estoque.PRODUTO}</td>
           <td>{estoque.SALDO}</td>

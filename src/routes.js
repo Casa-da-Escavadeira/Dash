@@ -11,6 +11,7 @@ import EstoquesGer from './pages/EstoqueGer';
 import OPsPosVendas from './pages/OPsPosVendas';
 import OPsFilial from './pages/OPsFilial';
 import OPsPP from './pages/OPsPP';
+import ProductRegister from './pages/ProductRegister.js';
 
 
 export default function Routes() {
@@ -22,6 +23,7 @@ export default function Routes() {
       <Route path="/pcs" component={PCs} />
       <Route path="/scs" component={SCs} />
       <Route path="/prodash" component={Pro_Dash} />
+      <Route path="/productregister" component={ProductRegister} />
       <Route path="/estoqueger" component={EstoquesGer} />
       <Route path="/opspos" component={OPsPosVendas} />
       <Route path="/opsfilial" component={OPsFilial} />

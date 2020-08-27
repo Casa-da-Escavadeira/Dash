@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Table, Button, InputGroup, FormControl, Row, Col, Badge } from 'react-bootstrap';
+import { useLocation } from 'react-router-dom';
 import './Pro_Dash.css';
 
 import api from '../services/api';
@@ -21,6 +22,7 @@ export default function Pro_Dash() {
   const [sumSCs, setSumSCs] = useState('');
   const [sumPCs, setSumPCs] = useState('');
   const [saldoPrev, setSaldoPrev] = useState('');
+  const location  = useLocation();
 
   useEffect(() => {
     const mapEmpenhos = EMPs.map(emp => emp.SALDO);
@@ -50,97 +52,107 @@ export default function Pro_Dash() {
   
   // Colocar OPs, Onde Usado e opção matriz/filial
 
-  async function handleSubmit(e) {
-    const product = productNumber.toUpperCase().trim();
+  const handleSubmit = useCallback(
+    async (search) => {
+      console.log(search);
+      let product = productNumber.toUpperCase().trim();
 
-      const response = await api.get('/estoques', {
-        headers: {
-          filial: '0101',
-          produto: product,
-          armazem: '01',
-        }})
-      setAlmoxarifados(response.data);
-
-      const response2 = await api.get('/estoques', {
-        headers: {
-          filial: '0101',
-          produto: product,
-          armazem: '99',
-        }})
-      setSupermercados(response2.data);
-
-      const response3 = await api.get('/estoques', {
-        headers: {
-          filial: '0101',
-          produto: product,
-          armazem: '04',
-        }})
-
-      setQuebrados(response3.data);
-
-      const response4 = await api.get('/estoques', {
-        headers: {
-          filial: '0101',
-          produto: product,
-          armazem: '03',
-        }})
-      setPos(response4.data);
-
-      const response5 = await api.get('/estoques', {
-        headers: {
-          filial: '0102',
-          produto: product,
-        }})
-      setVix(response5.data);
-
-      const stockWarehouse06Data = await api.get('/estoques', {
-        headers: {
-          filial: '0101',
-          produto: product,
-          armazem: '06',
-        }})
-      setStockWarehouse06(stockWarehouse06Data.data);
-
-      const productInfoResponse = await api.get('/register', {
-        headers: {
-          produto: product,
-        }})
-      setProductInfo(productInfoResponse.data);
-
-      const response6 = await api.get('/pcs', {
-        headers: {
-          filial: '0101',
-          produto: product,
-          finalizado: true,
-        }})
-      
-      setPCs(response6.data);
-
-      const response7 = await api.get('/scs', {
-        headers: {
-          filial: '0101',
-          produto: product,
-          finalizado: true,
-        }})
-      
-      setSCs(response7.data);
-
-      const response8 = await api.get('/emp', {
-        headers: {
-          filial: '0101',
-          produto: product,
-        }})
-      
-      setEMPs(response8.data);
-
-      const response9 = await api.get('/ou', {
-        headers: {
-          filial: '0101',
-          produto: product,
-        }})
-      
-      setOUs(response9.data);
-  }
+      if(search) {
+        product = search.toUpperCase().trim();
+      }
+  
+        const response = await api.get('/estoques', {
+          headers: {
+            filial: '0101',
+            produto: product,
+            armazem: '01',
+          }})
+        setAlmoxarifados(response.data);
+  
+        const response2 = await api.get('/estoques', {
+          headers: {
+            filial: '0101',
+            produto: product,
+            armazem: '99',
+          }})
+        setSupermercados(response2.data);
+  
+        const response3 = await api.get('/estoques', {
+          headers: {
+            filial: '0101',
+            produto: product,
+            armazem: '04',
+          }})
+  
+        setQuebrados(response3.data);
+  
+        const response4 = await api.get('/estoques', {
+          headers: {
+            filial: '0101',
+            produto: product,
+            armazem: '03',
+          }})
+        setPos(response4.data);
+  
+        const response5 = await api.get('/estoques', {
+          headers: {
+            filial: '0102',
+            produto: product,
+          }})
+        setVix(response5.data);
+  
+        const stockWarehouse06Data = await api.get('/estoques', {
+          headers: {
+            filial: '0101',
+            produto: product,
+            armazem: '06',
+          }})
+        setStockWarehouse06(stockWarehouse06Data.data);
+  
+        const productInfoResponse = await api.get('/register', {
+          headers: {
+            filial: '0101',
+            produto: product,
+          }})
+        setProductInfo(productInfoResponse.data);
+  
+        const response6 = await api.get('/pcs', {
+          headers: {
+            filial: '0101',
+            produto: product,
+            finalizado: true,
+          }})
+        
+        setPCs(response6.data);
+  
+        const response7 = await api.get('/scs', {
+          headers: {
+            filial: '0101',
+            produto: product,
+            finalizado: true,
+          }})
+        
+        setSCs(response7.data);
+  
+        const response8 = await api.get('/emp', {
+          headers: {
+            filial: '0101',
+            produto: product,
+          }})
+        
+        setEMPs(response8.data);
+  
+        const response9 = await api.get('/ou', {
+          headers: {
+            filial: '0101',
+            produto: product,
+          }})
+        
+        setOUs(response9.data);
+    },
+    [productNumber],
+  );
+  
 
   //submit on press Enter
   function keyPressed(event) {
@@ -148,6 +160,15 @@ export default function Pro_Dash() {
       handleSubmit();
     }
   }
+
+  useEffect(() => {
+    if (location.state) {
+      setProductNumber(location.state);
+      handleSubmit(location.state);
+    }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.state])
 
   return (
 
@@ -165,7 +186,7 @@ export default function Pro_Dash() {
         <InputGroup.Append>
           <Button 
             variant="outline-warning"
-            onClick={handleSubmit}
+            onClick={() => handleSubmit()}
             type="submit"
             >Enviar</Button>
         </InputGroup.Append>
@@ -184,7 +205,7 @@ export default function Pro_Dash() {
               </thead>
               <tbody>
               {productInfo.map(product => (
-                <tr>
+                <tr key={product.DESCRICAO}>
                   <td>{product.DESCRICAO}</td>
                   <td>{product.UM}</td>
                   <td>{product.PP}</td>
@@ -206,7 +227,7 @@ export default function Pro_Dash() {
               </thead>
               <tbody>
                 {almoxarifados.map(almoxarifado => (
-                  <tr>
+                  <tr key={almoxarifado.SALDO}>
                     <td>{almoxarifado.SALDO}</td>
                   </tr>
                 ))}
@@ -223,7 +244,7 @@ export default function Pro_Dash() {
               </thead>
               <tbody>
               {supermecados.map(supermecado => (
-                <tr>
+                <tr key={supermecado.SALDO}>
                   <td>{supermecado.SALDO}</td>
                 </tr>
               ))}
@@ -240,7 +261,7 @@ export default function Pro_Dash() {
               </thead>
               <tbody>
               {stockWarehouse06.map(stockWarehouse06 => (
-                <tr>
+                <tr key={stockWarehouse06.SALDO}>
                   <td>{stockWarehouse06.SALDO}</td>
                 </tr>
               ))}
@@ -257,7 +278,7 @@ export default function Pro_Dash() {
               </thead>
               <tbody>
               {quebrados.map(quebrado => (
-                <tr>
+                <tr key={quebrado.SALDO}>
                   <td>{quebrado.SALDO}</td>
                 </tr>
               ))}
@@ -274,7 +295,7 @@ export default function Pro_Dash() {
               </thead>
               <tbody>
               {pos.map(pos => (
-                <tr>
+                <tr key={pos.SALDO}>
                   <td>{pos.SALDO}</td>
                 </tr>
               ))}
@@ -290,7 +311,7 @@ export default function Pro_Dash() {
               </thead>
               <tbody>
               {vix.map(vix => (
-                <tr>
+                <tr key={vix.SALDO}>
                   <td>{vix.SALDO}</td>
                 </tr>
               ))}
@@ -337,7 +358,7 @@ export default function Pro_Dash() {
               </thead>
               <tbody>
               {PCs.map(pc => (
-                <tr>
+                <tr key={pc.EMISSAO}>
                   <td>{pc.EMISSAO}</td>
                   <td>{pc.APROVADO === 'L' ?  <Badge variant="success">SIM</Badge> : <Badge variant="danger">NÃO</Badge>}</td>
                   <td>{pc.PEDIDO}</td>
@@ -367,7 +388,7 @@ export default function Pro_Dash() {
               </thead>
               <tbody>
               {SCs.map(sc => (
-                <tr>
+                <tr key={sc.EMISSAO}>
                   <td>{sc.EMISSAO}</td>
                   <td>{sc.SC}</td>
                   <td>{sc.QTD}</td>
@@ -392,7 +413,7 @@ export default function Pro_Dash() {
               </thead>
               <tbody>
               {OUs.map(ou => (
-                <tr>
+                <tr key={ou.CODIGO}>
                   <td>{ou.CODIGO}</td>
                   <td>{ou.QUANTIDADE}</td>
                 </tr>
@@ -414,7 +435,7 @@ export default function Pro_Dash() {
               </thead>
               <tbody>
               {EMPs.map(emp => (
-                <tr>
+                <tr key={emp.DEC_OP}>
                   <td>{emp.DEC_OP}</td>
                   <td>{emp.OP}</td>
                   <td>{emp.SALDO}</td>
