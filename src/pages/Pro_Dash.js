@@ -7,6 +7,7 @@ import {
   Row,
   Col,
   Badge,
+  Spinner,
 } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import './Pro_Dash.css';
@@ -27,6 +28,27 @@ export default function Pro_Dash() {
   const [SCs, setSCs] = useState([]);
   const [EMPs, setEMPs] = useState([]);
   const [OUs, setOUs] = useState([]);
+  const [codigoPlaceholder, setCodigoPlaceholder] = useState(
+    'Pesquise por um código...',
+  );
+  const [pcPlaceholder, setPcPlaceholder] = useState(
+    'Pesquise por um código...',
+  );
+  const [scPlaceholder, setScPlaceholder] = useState(
+    'Pesquise por um código...',
+  );
+  const [ouPlaceholder, setOuPlaceholder] = useState(
+    'Pesquise por um código...',
+  );
+  const [empPlaceholder, setEmpPlaceholder] = useState(
+    'Pesquise por um código...',
+  );
+  const [almoxarifadoPlaceholder, setAlmoxarifadoPlaceholder] = useState(0);
+  const [supermercadosPlaceholder, setSupermercadosPlaceholder] = useState(0);
+  const [posPlaceholder, setPosPlaceholder] = useState(0);
+  const [vixPlaceholder, setVixPlaceholder] = useState(0);
+  const [stock06Placeholder, setStock06Placeholder] = useState(0);
+  const [quebradosPlaceholder, setQuebradosPlaceholder] = useState(0);
   const [sumEmp, setSumEmp] = useState('');
   const [sumSCs, setSumSCs] = useState('');
   const [sumPCs, setSumPCs] = useState('');
@@ -42,18 +64,18 @@ export default function Pro_Dash() {
     setSumEmp(sumEmpenhos);
 
     const mapSCs = SCs.map(sc => sc.QTD - sc.QTD_ENT);
-    const sumSCs =
+    const totalSumSCs =
       mapSCs.length > 0
         ? Number(parseFloat(mapSCs.reduce((a, b) => a + b)).toFixed(2))
         : 0;
-    setSumSCs(sumSCs);
+    setSumSCs(totalSumSCs);
 
     const mapPCs = PCs.map(pc => pc.QTD - pc.QTD_ENT);
-    const sumPCs =
+    const totalSumPCs =
       mapPCs.length > 0
         ? Number(parseFloat(mapPCs.reduce((a, b) => a + b)).toFixed(2))
         : 0;
-    setSumPCs(sumPCs);
+    setSumPCs(totalSumPCs);
 
     const saldo =
       (almoxarifados[0] !== undefined ? almoxarifados[0].SALDO : 0) +
@@ -61,18 +83,51 @@ export default function Pro_Dash() {
       sumSCs -
       sumEmp;
     setSaldoPrev(Number(parseFloat(saldo).toFixed(2)));
-  }, [EMPs, PCs, SCs, almoxarifados, sumEmp]);
+  }, [EMPs, PCs, SCs, almoxarifados, sumEmp, sumPCs, sumSCs]);
 
   // Colocar OPs, Onde Usado e opção matriz/filial
 
   const handleSubmit = useCallback(
     async search => {
-      console.log(search);
       let product = productNumber.toUpperCase().trim();
 
       if (search) {
         product = search.toUpperCase().trim();
       }
+
+      setCodigoPlaceholder(
+        <Spinner animation="border" size="sm" variant="warning" />,
+      );
+      setAlmoxarifadoPlaceholder(
+        <Spinner animation="border" size="sm" variant="warning" />,
+      );
+      setSupermercadosPlaceholder(
+        <Spinner animation="border" size="sm" variant="warning" />,
+      );
+      setQuebradosPlaceholder(
+        <Spinner animation="border" size="sm" variant="warning" />,
+      );
+      setPosPlaceholder(
+        <Spinner animation="border" size="sm" variant="warning" />,
+      );
+      setVixPlaceholder(
+        <Spinner animation="border" size="sm" variant="warning" />,
+      );
+      setStock06Placeholder(
+        <Spinner animation="border" size="sm" variant="warning" />,
+      );
+      setPcPlaceholder(
+        <Spinner animation="border" size="sm" variant="warning" />,
+      );
+      setScPlaceholder(
+        <Spinner animation="border" size="sm" variant="warning" />,
+      );
+      setEmpPlaceholder(
+        <Spinner animation="border" size="sm" variant="warning" />,
+      );
+      setOuPlaceholder(
+        <Spinner animation="border" size="sm" variant="warning" />,
+      );
 
       const response = await api.get('/estoques', {
         headers: {
@@ -81,7 +136,11 @@ export default function Pro_Dash() {
           armazem: '01',
         },
       });
-      setAlmoxarifados(response.data);
+      if (response.data.length === 0) {
+        setAlmoxarifados([{ SALDO: 0 }]);
+      } else {
+        setAlmoxarifados(response.data);
+      }
 
       const response2 = await api.get('/estoques', {
         headers: {
@@ -90,7 +149,11 @@ export default function Pro_Dash() {
           armazem: '99',
         },
       });
-      setSupermercados(response2.data);
+      if (response2.data.length === 0) {
+        setSupermercados([{ SALDO: 0 }]);
+      } else {
+        setSupermercados(response2.data);
+      }
 
       const response3 = await api.get('/estoques', {
         headers: {
@@ -99,8 +162,11 @@ export default function Pro_Dash() {
           armazem: '04',
         },
       });
-
-      setQuebrados(response3.data);
+      if (response3.data.length === 0) {
+        setQuebrados([{ SALDO: 0 }]);
+      } else {
+        setQuebrados(response3.data);
+      }
 
       const response4 = await api.get('/estoques', {
         headers: {
@@ -109,7 +175,11 @@ export default function Pro_Dash() {
           armazem: '03',
         },
       });
-      setPos(response4.data);
+      if (response4.data.length === 0) {
+        setPos([{ SALDO: 0 }]);
+      } else {
+        setPos(response4.data);
+      }
 
       const response5 = await api.get('/estoques', {
         headers: {
@@ -117,7 +187,11 @@ export default function Pro_Dash() {
           produto: product,
         },
       });
-      setVix(response5.data);
+      if (response5.data.length === 0) {
+        setVix([{ SALDO: 0 }]);
+      } else {
+        setVix(response5.data);
+      }
 
       const stockWarehouse06Data = await api.get('/estoques', {
         headers: {
@@ -126,7 +200,11 @@ export default function Pro_Dash() {
           armazem: '06',
         },
       });
-      setStockWarehouse06(stockWarehouse06Data.data);
+      if (stockWarehouse06Data.data.length === 0) {
+        setStockWarehouse06([{ SALDO: 0 }]);
+      } else {
+        setStockWarehouse06(stockWarehouse06Data.data);
+      }
 
       const productInfoResponse = await api.get('/register', {
         headers: {
@@ -134,6 +212,9 @@ export default function Pro_Dash() {
           produto: product,
         },
       });
+      if (productInfoResponse.data.length === 0) {
+        setCodigoPlaceholder('Parece que esse código não existe...');
+      }
       setProductInfo(productInfoResponse.data);
 
       const response6 = await api.get('/pcs', {
@@ -143,7 +224,9 @@ export default function Pro_Dash() {
           finalizado: true,
         },
       });
-
+      if (response6.data.length === 0) {
+        setPcPlaceholder('Parece que não há PCs...');
+      }
       setPCs(response6.data);
 
       const response7 = await api.get('/scs', {
@@ -153,7 +236,9 @@ export default function Pro_Dash() {
           finalizado: true,
         },
       });
-
+      if (response7.data.length === 0) {
+        setScPlaceholder('Parece que não há SCs...');
+      }
       setSCs(response7.data);
 
       const response8 = await api.get('/emp', {
@@ -162,7 +247,9 @@ export default function Pro_Dash() {
           produto: product,
         },
       });
-
+      if (response8.data.length === 0) {
+        setEmpPlaceholder('Parece que não há empenhos...');
+      }
       setEMPs(response8.data);
 
       const response9 = await api.get('/ou', {
@@ -171,7 +258,9 @@ export default function Pro_Dash() {
           produto: product,
         },
       });
-
+      if (response9.data.length === 0) {
+        setOuPlaceholder('Parece que não é usado em nenhum lugar...');
+      }
       setOUs(response9.data);
     },
     [productNumber],
@@ -190,7 +279,7 @@ export default function Pro_Dash() {
       handleSubmit(location.state);
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, [location.state]);
 
   return (
@@ -228,15 +317,21 @@ export default function Pro_Dash() {
               </tr>
             </thead>
             <tbody>
-              {productInfo.map(product => (
-                <tr key={product.DESCRICAO}>
-                  <td>{product.DESCRICAO}</td>
-                  <td>{product.UM}</td>
-                  <td>{product.PP}</td>
-                  <td>{product.LE}</td>
-                  <td>{product.ESTSEG}</td>
+              {productInfo.length !== 0 ? (
+                productInfo.map(product => (
+                  <tr key={product.DESCRICAO}>
+                    <td>{product.DESCRICAO}</td>
+                    <td>{product.UM}</td>
+                    <td>{product.PP}</td>
+                    <td>{product.LE}</td>
+                    <td>{product.ESTSEG}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5">{codigoPlaceholder}</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </Table>
         </Col>
@@ -250,11 +345,17 @@ export default function Pro_Dash() {
               </tr>
             </thead>
             <tbody>
-              {almoxarifados.map(almoxarifado => (
-                <tr key={almoxarifado.SALDO}>
-                  <td>{almoxarifado.SALDO}</td>
+              {almoxarifados.length !== 0 ? (
+                almoxarifados.map(almoxarifado => (
+                  <tr key={almoxarifado.SALDO}>
+                    <td>{almoxarifado.SALDO}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td>{almoxarifadoPlaceholder}</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </Table>
         </Col>
@@ -267,11 +368,17 @@ export default function Pro_Dash() {
               </tr>
             </thead>
             <tbody>
-              {supermecados.map(supermecado => (
-                <tr key={supermecado.SALDO}>
-                  <td>{supermecado.SALDO}</td>
+              {supermecados.length !== 0 ? (
+                supermecados.map(supermecado => (
+                  <tr key={supermecado.SALDO}>
+                    <td>{supermecado.SALDO}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td>{supermercadosPlaceholder}</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </Table>
         </Col>
@@ -284,11 +391,17 @@ export default function Pro_Dash() {
               </tr>
             </thead>
             <tbody>
-              {stockWarehouse06.map(stockWarehouse06 => (
-                <tr key={stockWarehouse06.SALDO}>
-                  <td>{stockWarehouse06.SALDO}</td>
+              {stockWarehouse06.length !== 0 ? (
+                stockWarehouse06.map(stock06 => (
+                  <tr key={stock06.SALDO}>
+                    <td>{stock06.SALDO}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td>{stock06Placeholder}</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </Table>
         </Col>
@@ -301,11 +414,17 @@ export default function Pro_Dash() {
               </tr>
             </thead>
             <tbody>
-              {quebrados.map(quebrado => (
-                <tr key={quebrado.SALDO}>
-                  <td>{quebrado.SALDO}</td>
+              {quebrados.length !== 0 ? (
+                quebrados.map(quebrado => (
+                  <tr key={quebrado.SALDO}>
+                    <td>{quebrado.SALDO}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td>{quebradosPlaceholder}</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </Table>
         </Col>
@@ -318,11 +437,17 @@ export default function Pro_Dash() {
               </tr>
             </thead>
             <tbody>
-              {pos.map(pos => (
-                <tr key={pos.SALDO}>
-                  <td>{pos.SALDO}</td>
+              {pos.length !== 0 ? (
+                pos.map(posItem => (
+                  <tr key={posItem.SALDO}>
+                    <td>{posItem.SALDO}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td>{posPlaceholder}</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </Table>
         </Col>
@@ -334,11 +459,17 @@ export default function Pro_Dash() {
               </tr>
             </thead>
             <tbody>
-              {vix.map(vix => (
-                <tr key={vix.SALDO}>
-                  <td>{vix.SALDO}</td>
+              {vix.length !== 0 ? (
+                vix.map(vixItem => (
+                  <tr key={vixItem.SALDO}>
+                    <td>{vixItem.SALDO}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td>{vixPlaceholder}</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </Table>
         </Col>
@@ -381,32 +512,38 @@ export default function Pro_Dash() {
               </tr>
             </thead>
             <tbody>
-              {PCs.map(pc => (
-                <tr key={pc.EMISSAO}>
-                  <td>{pc.EMISSAO}</td>
-                  <td>
-                    {pc.APROVADO === 'L' ? (
-                      <Badge variant="success">SIM</Badge>
-                    ) : (
-                      <Badge variant="danger">NÃO</Badge>
-                    )}
-                  </td>
-                  <td>
-                    <Link
-                      to={{
-                        pathname: '/prodash',
-                        state: pc.PEDIDO,
-                      }}
-                    >
-                      {pc.PEDIDO}
-                    </Link>
-                  </td>
-                  <td>{pc.QTD}</td>
-                  <td>{pc.QTD_ENT}</td>
-                  <td>{pc.ENTREGA}</td>
-                  <td>{pc.DESC_FORN}</td>
+              {PCs.length !== 0 ? (
+                PCs.map(pc => (
+                  <tr key={pc.EMISSAO}>
+                    <td>{pc.EMISSAO}</td>
+                    <td>
+                      {pc.APROVADO === 'L' ? (
+                        <Badge variant="success">SIM</Badge>
+                      ) : (
+                        <Badge variant="danger">NÃO</Badge>
+                      )}
+                    </td>
+                    <td>
+                      <Link
+                        to={{
+                          pathname: '/pcs',
+                          state: [pc.PEDIDO, productNumber],
+                        }}
+                      >
+                        {pc.PEDIDO}
+                      </Link>
+                    </td>
+                    <td>{pc.QTD}</td>
+                    <td>{pc.QTD_ENT}</td>
+                    <td>{pc.ENTREGA}</td>
+                    <td>{pc.DESC_FORN}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7">{pcPlaceholder}</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </Table>
         </Col>
@@ -426,16 +563,31 @@ export default function Pro_Dash() {
               </tr>
             </thead>
             <tbody>
-              {SCs.map(sc => (
-                <tr key={sc.EMISSAO}>
-                  <td>{sc.EMISSAO}</td>
-                  <td>{sc.SC}</td>
-                  <td>{sc.QTD}</td>
-                  <td>{sc.QTD_ENT}</td>
-                  <td>{sc.ENTREGA}</td>
-                  <td>{sc.OBS}</td>
+              {SCs.length !== 0 ? (
+                SCs.map(sc => (
+                  <tr key={sc.EMISSAO}>
+                    <td>{sc.EMISSAO}</td>
+                    <td>
+                      <Link
+                        to={{
+                          pathname: '/scs',
+                          state: [sc.SC, productNumber],
+                        }}
+                      >
+                        {sc.SC}
+                      </Link>
+                    </td>
+                    <td>{sc.QTD}</td>
+                    <td>{sc.QTD_ENT}</td>
+                    <td>{sc.ENTREGA}</td>
+                    <td>{sc.OBS}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6">{scPlaceholder}</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </Table>
         </Col>
@@ -451,12 +603,18 @@ export default function Pro_Dash() {
               </tr>
             </thead>
             <tbody>
-              {OUs.map(ou => (
-                <tr key={ou.CODIGO}>
-                  <td>{ou.CODIGO}</td>
-                  <td>{ou.QUANTIDADE}</td>
+              {OUs.length !== 0 ? (
+                OUs.map(ou => (
+                  <tr key={ou.CODIGO}>
+                    <td>{ou.CODIGO}</td>
+                    <td>{ou.QUANTIDADE}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="2">{ouPlaceholder}</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </Table>
         </Col>
@@ -473,15 +631,21 @@ export default function Pro_Dash() {
               </tr>
             </thead>
             <tbody>
-              {EMPs.map(emp => (
-                <tr key={emp.DEC_OP}>
-                  <td>{emp.DEC_OP}</td>
-                  <td>{emp.OP}</td>
-                  <td>{emp.SALDO}</td>
-                  <td>{emp.ARMAZEM}</td>
-                  <td>{emp.ENTREGA}</td>
+              {EMPs.length !== 0 ? (
+                EMPs.map(emp => (
+                  <tr key={emp.DEC_OP}>
+                    <td>{emp.DEC_OP}</td>
+                    <td>{emp.OP}</td>
+                    <td>{emp.SALDO}</td>
+                    <td>{emp.ARMAZEM}</td>
+                    <td>{emp.ENTREGA}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5">{empPlaceholder}</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </Table>
         </Col>

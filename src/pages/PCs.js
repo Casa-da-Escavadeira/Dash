@@ -1,43 +1,95 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, InputGroup, FormControl, Badge } from 'react-bootstrap';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  Table,
+  Button,
+  InputGroup,
+  FormControl,
+  Badge,
+  Row,
+  Col,
+} from 'react-bootstrap';
+import { useLocation, Link } from 'react-router-dom';
+import { FiArrowLeft } from 'react-icons/fi';
 import './PCs.css';
 
 import api from '../services/api';
 
 export default function PCs() {
-  const [pcNumber, setpcNumber] = useState('');
-  const [PCs, setPCs] = useState([]);
+  const [pcNumber, setPcNumber] = useState('');
+  const [dataPCs, setDataPCs] = useState([]);
   const [sumPCs, setSumPCs] = useState([]);
+  const location = useLocation();
 
-  async function handleSubmit(e) {
-    const pc = pcNumber.trim();
+  const handleSubmit = useCallback(
+    async search => {
+      let pc = pcNumber.trim();
+
+      if (search) {
+        pc = search.toUpperCase().trim();
+      }
+
       const response = await api.get('/pcs', {
         headers: {
           filial: '0101',
-          pc: pc,
-        }})
-      
-      setPCs(response.data);
-  }
-  
-  useEffect(() => {
-    const mapPCs = PCs.map(pc => pc.PRECO * (pc.QTD - pc.QTD_ENT));
-    const sumPCs =
-    mapPCs.length > 0 ? mapPCs.reduce((a, b) => a + b) : 0;
-    setSumPCs(sumPCs)
-  }, [PCs])
+          pc,
+        },
+      });
 
-  //submit on press Enter
+      setDataPCs(response.data);
+    },
+    [pcNumber],
+  );
+
+  useEffect(() => {
+    const mapPCs = dataPCs.map(pc => pc.PRECO * (pc.QTD - pc.QTD_ENT));
+    const totalSumPCs = mapPCs.length > 0 ? mapPCs.reduce((a, b) => a + b) : 0;
+    setSumPCs(totalSumPCs);
+  }, [dataPCs]);
+
+  // submit on press Enter
   function keyPressed(event) {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       handleSubmit();
     }
   }
 
-  
-  return (
+  useEffect(() => {
+    if (location.state) {
+      setPcNumber(location.state[0]);
+      handleSubmit(location.state[0]);
+    }
+    // eslint-disable-next-line
+  }, [location.state]);
 
+  return (
     <div className="main-container">
+      {location.state ? (
+        <Row>
+          <Col align="left" style={{ marginBottom: -50, marginTop: 12 }}>
+            <Link
+              to={{
+                pathname: '/prodash',
+                state: location.state[1],
+              }}
+            >
+              <FiArrowLeft color="#999" />
+            </Link>
+          </Col>
+        </Row>
+      ) : (
+        <Row>
+          <Col align="left" style={{ marginBottom: -50, marginTop: 12 }}>
+            <Link
+              to={{
+                pathname: '/',
+              }}
+            >
+              <FiArrowLeft color="#999" />
+            </Link>
+          </Col>
+        </Row>
+      )}
+
       <h1>Pedidos de Compra</h1>
       <InputGroup className="mb-3" onSubmit={handleSubmit}>
         <FormControl
@@ -46,14 +98,16 @@ export default function PCs() {
           aria-describedby="basic-addon2"
           value={pcNumber}
           onKeyPress={keyPressed}
-          onChange={e => setpcNumber(e.target.value)}  
+          onChange={e => setPcNumber(e.target.value)}
         />
         <InputGroup.Append>
-          <Button 
-            onClick={handleSubmit}
+          <Button
+            onClick={() => handleSubmit()}
             type="submit"
             variant="outline-warning"
-            >Enviar</Button>
+          >
+            Enviar
+          </Button>
         </InputGroup.Append>
       </InputGroup>
 
@@ -76,31 +130,38 @@ export default function PCs() {
           </tr>
         </thead>
         <tbody>
-        {PCs.map(pcs => (
-          <tr>
-            <td>{pcs.APROVADO === 'L' ?  <Badge variant="success">SIM</Badge> : <Badge variant="danger">NÃO</Badge>}</td>
-            <td>{pcs.ITEM}</td>
-            <td>{pcs.PRODUTO}</td>
-            <td>{pcs.DESCRICAO}</td>
-            <td>{pcs.UM}</td>
-            <td>{pcs.QTD}</td>
-            <td>{pcs.QTD_ENT}</td>
-            <td>R${pcs.PRECO}</td>
-            <td>{pcs.NUMSC}</td>
-            <td>{pcs.OBS}</td>
-            <td>{pcs.ENTREGA}</td>
-            <td>{pcs.FORN}</td>
-            <td>{pcs.DESC_FORN}</td>
-          </tr>
-        ))}
+          {dataPCs.map(pcs => (
+            <tr>
+              <td>
+                {pcs.APROVADO === 'L' ? (
+                  <Badge variant="success">SIM</Badge>
+                ) : (
+                  <Badge variant="danger">NÃO</Badge>
+                )}
+              </td>
+              <td>{pcs.ITEM}</td>
+              <td>{pcs.PRODUTO}</td>
+              <td>{pcs.DESCRICAO}</td>
+              <td>{pcs.UM}</td>
+              <td>{pcs.QTD}</td>
+              <td>{pcs.QTD_ENT}</td>
+              <td>R${pcs.PRECO}</td>
+              <td>{pcs.NUMSC}</td>
+              <td>{pcs.OBS}</td>
+              <td>{pcs.ENTREGA}</td>
+              <td>{pcs.FORN}</td>
+              <td>{pcs.DESC_FORN}</td>
+            </tr>
+          ))}
         </tbody>
       </Table>
-      <h3>Total do pedido: {sumPCs.toLocaleString('pt-br', {
-        style: 'currency',
-        currency: 'BRL',
-      })}</h3>
-      
+      <h3>
+        Total do pedido:{' '}
+        {sumPCs.toLocaleString('pt-br', {
+          style: 'currency',
+          currency: 'BRL',
+        })}
+      </h3>
     </div>
-
   );
 }
