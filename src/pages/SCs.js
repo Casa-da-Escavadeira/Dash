@@ -122,7 +122,7 @@ export default function SCs() {
             <th>DATA</th>
             <th>UM</th>
             <th>QTD</th>
-            <th>EM PC</th>
+            <th>EM_PC</th>
             <th>OBS</th>
             <th>PC</th>
             <th>ENTREGA</th>
