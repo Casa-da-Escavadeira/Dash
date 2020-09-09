@@ -6,6 +6,7 @@ import {
   FormControl,
   Row,
   Col,
+  Spinner,
 } from 'react-bootstrap';
 import { useLocation, Link } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -16,13 +17,20 @@ import api from '../services/api';
 export default function SCs() {
   const [scNumber, setScNumber] = useState('');
   const [dataSCs, setDataSCs] = useState([]);
+  const [scsPlaceholder, setScsPlaceholder] = useState(
+    'Pesquise por uma SC...',
+  );
   const location = useLocation();
 
   const handleSubmit = useCallback(
     async search => {
+      setDataSCs([]);
+      setScsPlaceholder(
+        <Spinner animation="border" size="sm" variant="warning" />,
+      );
       let sc = scNumber.trim();
 
-      if (search) {
+      if (search > 0) {
         sc = search.toUpperCase().trim();
       }
       const response = await api.get('/scs', {
@@ -31,6 +39,9 @@ export default function SCs() {
           sc,
         },
       });
+      if (response.data.length === 0) {
+        setScsPlaceholder('Parece que não há uma SC com esse número...');
+      }
 
       setDataSCs(response.data);
     },
@@ -118,20 +129,26 @@ export default function SCs() {
           </tr>
         </thead>
         <tbody>
-          {dataSCs.map(scs => (
+          {dataSCs.length !== 0 ? (
+            dataSCs.map(scs => (
+              <tr>
+                <td>{scs.ITEM}</td>
+                <td>{scs.PRODUTO}</td>
+                <td>{scs.DESCRICAO}</td>
+                <td>{scs.ENTREGA}</td>
+                <td>{scs.UM}</td>
+                <td>{scs.QTD}</td>
+                <td>{scs.QTD_ENT}</td>
+                <td>{scs.OBS}</td>
+                <td>{scs.PC}</td>
+                <td>{scs.PC_ENTREGA}</td>
+              </tr>
+            ))
+          ) : (
             <tr>
-              <td>{scs.ITEM}</td>
-              <td>{scs.PRODUTO}</td>
-              <td>{scs.DESCRICAO}</td>
-              <td>{scs.ENTREGA}</td>
-              <td>{scs.UM}</td>
-              <td>{scs.QTD}</td>
-              <td>{scs.QTD_ENT}</td>
-              <td>{scs.OBS}</td>
-              <td>{scs.PC}</td>
-              <td>{scs.PC_ENTREGA}</td>
+              <td colSpan="10">{scsPlaceholder}</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </Table>
     </div>

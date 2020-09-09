@@ -7,6 +7,7 @@ import {
   Badge,
   Row,
   Col,
+  Spinner,
 } from 'react-bootstrap';
 import { useLocation, Link } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -18,13 +19,18 @@ export default function PCs() {
   const [pcNumber, setPcNumber] = useState('');
   const [dataPCs, setDataPCs] = useState([]);
   const [sumPCs, setSumPCs] = useState([]);
+  const [pcsPlaceholder, setPcsPlaceholder] = useState('Pesquise por um PC...');
   const location = useLocation();
 
   const handleSubmit = useCallback(
     async search => {
+      setDataPCs([]);
+      setPcsPlaceholder(
+        <Spinner animation="border" size="sm" variant="warning" />,
+      );
       let pc = pcNumber.trim();
 
-      if (search) {
+      if (search > 0) {
         pc = search.toUpperCase().trim();
       }
 
@@ -34,6 +40,9 @@ export default function PCs() {
           pc,
         },
       });
+      if (response.data.length === 0) {
+        setPcsPlaceholder('Parece que não há um PC com esse número...');
+      }
 
       setDataPCs(response.data);
     },
@@ -130,29 +139,35 @@ export default function PCs() {
           </tr>
         </thead>
         <tbody>
-          {dataPCs.map(pcs => (
+          {dataPCs.length !== 0 ? (
+            dataPCs.map(pcs => (
+              <tr>
+                <td>
+                  {pcs.APROVADO === 'L' ? (
+                    <Badge variant="success">SIM</Badge>
+                  ) : (
+                    <Badge variant="danger">NÃO</Badge>
+                  )}
+                </td>
+                <td>{pcs.ITEM}</td>
+                <td>{pcs.PRODUTO}</td>
+                <td>{pcs.DESCRICAO}</td>
+                <td>{pcs.UM}</td>
+                <td>{pcs.QTD}</td>
+                <td>{pcs.QTD_ENT}</td>
+                <td>R${pcs.PRECO}</td>
+                <td>{pcs.NUMSC}</td>
+                <td>{pcs.OBS}</td>
+                <td>{pcs.ENTREGA}</td>
+                <td>{pcs.FORN}</td>
+                <td>{pcs.DESC_FORN}</td>
+              </tr>
+            ))
+          ) : (
             <tr>
-              <td>
-                {pcs.APROVADO === 'L' ? (
-                  <Badge variant="success">SIM</Badge>
-                ) : (
-                  <Badge variant="danger">NÃO</Badge>
-                )}
-              </td>
-              <td>{pcs.ITEM}</td>
-              <td>{pcs.PRODUTO}</td>
-              <td>{pcs.DESCRICAO}</td>
-              <td>{pcs.UM}</td>
-              <td>{pcs.QTD}</td>
-              <td>{pcs.QTD_ENT}</td>
-              <td>R${pcs.PRECO}</td>
-              <td>{pcs.NUMSC}</td>
-              <td>{pcs.OBS}</td>
-              <td>{pcs.ENTREGA}</td>
-              <td>{pcs.FORN}</td>
-              <td>{pcs.DESC_FORN}</td>
+              <td colSpan="13">{pcsPlaceholder}</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </Table>
       <h3>

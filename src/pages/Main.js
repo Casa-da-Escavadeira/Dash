@@ -1,14 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
 import './Main.css';
 import logo from '../img/logo.svg';
 
 export default function Main() {
   return (
     <div className="login-container">
-      <Container className="main">
-        <img src={logo} alt=""/>
+      <div className="main">
+        <img src={logo} alt="" />
         <Link to="/estoquemaq">
           <button type="button">Estoque de Máquinas</button>
         </Link>
@@ -36,7 +35,7 @@ export default function Main() {
         <Link to="/opspp">
           <button type="button">OPs por Ponto de Pedido</button>
         </Link>
-      </Container>
+      </div>
     </div>
   );
 }
