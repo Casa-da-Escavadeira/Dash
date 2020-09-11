@@ -11,6 +11,7 @@ import {
 } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import './Pro_Dash.css';
+import { FiArrowLeft } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
 import api from '../services/api';
@@ -95,6 +96,18 @@ export default function Pro_Dash() {
         product = search.toUpperCase().trim();
       }
 
+      setProductInfo([]);
+      setAlmoxarifados([]);
+      setSupermercados([]);
+      setQuebrados([]);
+      setPos([]);
+      setVix([]);
+      setStockWarehouse06([]);
+      setPCs([]);
+      setSCs([]);
+      setOUs([]);
+      setEMPs([]);
+
       setCodigoPlaceholder(
         <Spinner animation="border" size="sm" variant="warning" />,
       );
@@ -128,6 +141,17 @@ export default function Pro_Dash() {
       setOuPlaceholder(
         <Spinner animation="border" size="sm" variant="warning" />,
       );
+
+      const productInfoResponse = await api.get('/register', {
+        headers: {
+          filial: '0101',
+          produto: product,
+        },
+      });
+      if (productInfoResponse.data.length === 0) {
+        setCodigoPlaceholder('Parece que esse código não existe...');
+      }
+      setProductInfo(productInfoResponse.data);
 
       const response = await api.get('/estoques', {
         headers: {
@@ -206,17 +230,6 @@ export default function Pro_Dash() {
         setStockWarehouse06(stockWarehouse06Data.data);
       }
 
-      const productInfoResponse = await api.get('/register', {
-        headers: {
-          filial: '0101',
-          produto: product,
-        },
-      });
-      if (productInfoResponse.data.length === 0) {
-        setCodigoPlaceholder('Parece que esse código não existe...');
-      }
-      setProductInfo(productInfoResponse.data);
-
       const response6 = await api.get('/pcs', {
         headers: {
           filial: '0101',
@@ -241,17 +254,6 @@ export default function Pro_Dash() {
       }
       setSCs(response7.data);
 
-      const response8 = await api.get('/emp', {
-        headers: {
-          filial: '0101',
-          produto: product,
-        },
-      });
-      if (response8.data.length === 0) {
-        setEmpPlaceholder('Parece que não há empenhos...');
-      }
-      setEMPs(response8.data);
-
       const response9 = await api.get('/ou', {
         headers: {
           filial: '0101',
@@ -262,6 +264,17 @@ export default function Pro_Dash() {
         setOuPlaceholder('Parece que não é usado em nenhum lugar...');
       }
       setOUs(response9.data);
+
+      const response8 = await api.get('/emp', {
+        headers: {
+          filial: '0101',
+          produto: product,
+        },
+      });
+      if (response8.data.length === 0) {
+        setEmpPlaceholder('Parece que não há empenhos...');
+      }
+      setEMPs(response8.data);
     },
     [productNumber],
   );
@@ -284,6 +297,17 @@ export default function Pro_Dash() {
 
   return (
     <div className="main-container">
+      <Row>
+        <Col align="left" style={{ marginBottom: -50, marginTop: 12 }}>
+          <Link
+            to={{
+              pathname: '/',
+            }}
+          >
+            <FiArrowLeft color="#999" />
+          </Link>
+        </Col>
+      </Row>
       <h1>Produtos</h1>
       <InputGroup className="mb-3">
         <FormControl

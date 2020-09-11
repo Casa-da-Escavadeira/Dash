@@ -6,22 +6,31 @@ import {
   FormControl,
   DropdownButton,
   Dropdown,
+  Row,
+  Col,
+  Spinner,
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import './ProductRegister.css';
-import { FiLogIn } from 'react-icons/fi';
+import { FiLogIn, FiArrowLeft } from 'react-icons/fi';
 
 import api from '../services/api';
 
 export default function ProductRegister() {
   const [searchValue, setSearchValue] = useState('');
   const [products, setProducts] = useState([]);
-  const [filter, setFilter] = useState('Pesquisar por...');
+  const [filter, setFilter] = useState('Pesquisar por descrição');
+  const [searchPlaceholder, setSearchPlaceholder] = useState(
+    'Pesquise por um produto...',
+  );
 
-  async function handleSubmit(e) {
+  async function handleSubmit() {
     const search = searchValue.toUpperCase().trim();
     let response;
-
+    setProducts([]);
+    setSearchPlaceholder(
+      <Spinner animation="border" size="sm" variant="warning" />,
+    );
     if (filter === 'Código') {
       response = await api.get('/register', {
         headers: {
@@ -37,7 +46,9 @@ export default function ProductRegister() {
         },
       });
     }
-
+    if (response.data.length === 0) {
+      setSearchPlaceholder('Não encontramos nenhum produto...');
+    }
     setProducts(response.data);
   }
 
@@ -50,11 +61,22 @@ export default function ProductRegister() {
 
   return (
     <div className="main-container">
+      <Row>
+        <Col align="left" style={{ marginBottom: -50, marginTop: 12 }}>
+          <Link
+            to={{
+              pathname: '/',
+            }}
+          >
+            <FiArrowLeft color="#999" />
+          </Link>
+        </Col>
+      </Row>
       <h1>Cadastro de Produtos</h1>
       <InputGroup className="mb-3">
         <FormControl
-          placeholder="Código do Produto"
-          aria-label="Código do Produto"
+          placeholder="Pesquise por um produto..."
+          aria-label="Pesquise por um produto..."
           aria-describedby="basic-addon2"
           value={searchValue}
           onKeyPress={keyPressed}
@@ -93,23 +115,29 @@ export default function ProductRegister() {
           </tr>
         </thead>
         <tbody>
-          {products.map(product => (
-            <tr key={product.CODIGO}>
-              <td>{product.CODIGO}</td>
-              <td>{product.DESCRICAO}</td>
-              <td>{product.UM}</td>
-              <td>
-                <Link
-                  to={{
-                    pathname: '/prodash',
-                    state: product.CODIGO,
-                  }}
-                >
-                  <FiLogIn color="#999" />
-                </Link>
-              </td>
+          {products.length !== 0 ? (
+            products.map(product => (
+              <tr key={product.CODIGO}>
+                <td>{product.CODIGO}</td>
+                <td>{product.DESCRICAO}</td>
+                <td>{product.UM}</td>
+                <td>
+                  <Link
+                    to={{
+                      pathname: '/prodash',
+                      state: product.CODIGO,
+                    }}
+                  >
+                    <FiLogIn color="#999" />
+                  </Link>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5">{searchPlaceholder}</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </Table>
     </div>

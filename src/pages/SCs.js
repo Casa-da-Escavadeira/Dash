@@ -133,7 +133,16 @@ export default function SCs() {
             dataSCs.map(scs => (
               <tr>
                 <td>{scs.ITEM}</td>
-                <td>{scs.PRODUTO}</td>
+                <td>
+                  <Link
+                    to={{
+                      pathname: '/prodash',
+                      state: scs.PRODUTO,
+                    }}
+                  >
+                    {scs.PRODUTO}
+                  </Link>
+                </td>
                 <td>{scs.DESCRICAO}</td>
                 <td>{scs.ENTREGA}</td>
                 <td>{scs.UM}</td>

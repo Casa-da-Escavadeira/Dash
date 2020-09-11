@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Table, Col, Row } from "react-bootstrap";
-import "./EstoqueMaq.css";
+import React, { useEffect, useState } from 'react';
+import { Table, Col, Row, Spinner } from 'react-bootstrap';
+import { FiArrowLeft } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import './EstoqueMaq.css';
 
-import api from "../services/api";
+import api from '../services/api';
 
 export default function EstoquesGer() {
   const [estoques, setEstoques] = useState([]);
@@ -16,118 +18,173 @@ export default function EstoquesGer() {
   const [gs165A_01, setGS165A_01] = useState([]);
   const [gs230A_01, setGS230A_01] = useState([]);
   const [gs260A_01, setGS260A_01] = useState([]);
+  const [pcPlaceholder, setPcPlaceholder] = useState(
+    <Spinner animation="border" size="sm" variant="warning" />,
+  );
+  const [scPlaceholder, setScPlaceholder] = useState(
+    <Spinner animation="border" size="sm" variant="warning" />,
+  );
 
   useEffect(() => {
     async function loadEstoques() {
-      const response = await api.get("/estoques", {
+      const response = await api.get('/estoques', {
         headers: {
-          produto: "GS125', 'GS165', 'GS230', 'GS260"
-        }
+          produto: "GS125', 'GS165', 'GS230', 'GS260",
+        },
       });
       setEstoques(response.data);
 
-      const pcs = await api.get("/pcs", {
+      const pcs = await api.get('/pcs', {
         headers: {
-          filial: "0101",
+          filial: '0101',
           produto:
             "9900001327', '9900000777', '9900000778', '9900001100', '9900001335', '9900000786', '9900000821', '9900001101",
-            finalizado: true,
-          }
+          finalizado: true,
+        },
       });
+      if (pcs.data.length === 0) {
+        setPcPlaceholder('Parece que não há PCs...');
+      } else {
+        setPCs(pcs.data);
+      }
 
-      setPCs(pcs.data);
-
-      const scs = await api.get("/scs", {
+      const scs = await api.get('/scs', {
         headers: {
-          filial: "0101",
+          filial: '0101',
           produto:
             "9900001327', '9900000777', '9900000778', '9900001100', '9900001335', '9900000786', '9900000821', '9900001101",
-            finalizado: true,
-          }
+          finalizado: true,
+        },
       });
+      if (scs.data.length === 0) {
+        setScPlaceholder('Parece que não há PCs...');
+      } else {
+        setSCs(scs.data);
+      }
 
-      setSCs(scs.data);
-
-      //motores
-      const response1 = await api.get("/estoques", {
+      // motores
+      const response1 = await api.get('/estoques', {
         headers: {
-          filial: "0101",
-          produto: "9900001327",
-          armazem: "01"
-        }
+          filial: '0101',
+          produto: '9900001327',
+          armazem: '01',
+        },
       });
-      setGS125_01(response1.data);
+      if (response1.data.length === 0) {
+        setGS125_01([{ SALDO: 0 }]);
+      } else {
+        setGS125_01(response1.data);
+      }
 
-      const response2 = await api.get("/estoques", {
+      const response2 = await api.get('/estoques', {
         headers: {
-          filial: "0101",
-          produto: "9900000777",
-          armazem: "01"
-        }
+          filial: '0101',
+          produto: '9900000777',
+          armazem: '01',
+        },
       });
-      setGS165_01(response2.data);
+      if (response2.data.length === 0) {
+        setGS165_01([{ SALDO: 0 }]);
+      } else {
+        setGS165_01(response2.data);
+      }
 
-      const response3 = await api.get("/estoques", {
+      const response3 = await api.get('/estoques', {
         headers: {
-          filial: "0101",
-          produto: "9900000778",
-          armazem: "01"
-        }
+          filial: '0101',
+          produto: '9900000778',
+          armazem: '01',
+        },
       });
-      setGS230_01(response3.data);
+      if (response3.data.length === 0) {
+        setGS230_01([{ SALDO: 0 }]);
+      } else {
+        setGS230_01(response3.data);
+      }
 
-      const response4 = await api.get("/estoques", {
+      const response4 = await api.get('/estoques', {
         headers: {
-          filial: "0101",
-          produto: "9900001100",
-          armazem: "01"
-        }
+          filial: '0101',
+          produto: '9900001100',
+          armazem: '01',
+        },
       });
-      setGS260_01(response4.data);
+      if (response4.data.length === 0) {
+        setGS260_01([{ SALDO: 0 }]);
+      } else {
+        setGS260_01(response4.data);
+      }
 
-      //alternadores
+      // alternadores
 
-      const response5 = await api.get("/estoques", {
+      const response5 = await api.get('/estoques', {
         headers: {
-          filial: "0101",
-          produto: "9900001335",
-          armazem: "01"
-        }
+          filial: '0101',
+          produto: '9900001335',
+          armazem: '01',
+        },
       });
-      setGS125A_01(response5.data);
+      if (response5.data.length === 0) {
+        setGS125A_01([{ SALDO: 0 }]);
+      } else {
+        setGS125A_01(response5.data);
+      }
 
-      const response6 = await api.get("/estoques", {
+      const response6 = await api.get('/estoques', {
         headers: {
-          filial: "0101",
-          produto: "9900000786",
-          armazem: "01"
-        }
+          filial: '0101',
+          produto: '9900000786',
+          armazem: '01',
+        },
       });
-      setGS165A_01(response6.data);
+      if (response6.data.length === 0) {
+        setGS165A_01([{ SALDO: 0 }]);
+      } else {
+        setGS165A_01(response6.data);
+      }
 
-      const response7 = await api.get("/estoques", {
+      const response7 = await api.get('/estoques', {
         headers: {
-          filial: "0101",
-          produto: "9900000821",
-          armazem: "01"
-        }
+          filial: '0101',
+          produto: '9900000821',
+          armazem: '01',
+        },
       });
-      setGS230A_01(response7.data);
+      if (response7.data.length === 0) {
+        setGS230A_01([{ SALDO: 0 }]);
+      } else {
+        setGS230A_01(response7.data);
+      }
 
-      const response8 = await api.get("/estoques", {
+      const response8 = await api.get('/estoques', {
         headers: {
-          filial: "0101",
-          produto: "9900001101",
-          armazem: "01"
-        }
+          filial: '0101',
+          produto: '9900001101',
+          armazem: '01',
+        },
       });
-      setGS260A_01(response8.data);
+      if (response8.data.length === 0) {
+        setGS260A_01([{ SALDO: 0 }]);
+      } else {
+        setGS260A_01(response8.data);
+      }
     }
     loadEstoques();
-  },[]);
+  }, []);
 
   return (
     <div className="main-container">
+      <Row>
+        <Col align="left" style={{ marginBottom: -50, marginTop: 12 }}>
+          <Link
+            to={{
+              pathname: '/',
+            }}
+          >
+            <FiArrowLeft color="#999" />
+          </Link>
+        </Col>
+      </Row>
       <h1>Estoque de Geradores</h1>
       <Table responsive striped bordered hover>
         <thead>
@@ -140,14 +197,22 @@ export default function EstoquesGer() {
         </thead>
 
         <tbody>
-          {estoques.map(estoque => (
-            <tr key={estoque.FILIAL.concat('', estoque.PRODUTO)}>
-              <td>{estoque.FILIAL}</td>
-              <td>{estoque.PRODUTO}</td>
-              <td>{estoque.SALDO}</td>
-              <td>{estoque.ARMAZEM}</td>
+          {estoques.length > 0 ? (
+            estoques.map(estoque => (
+              <tr key={estoque.FILIAL.concat('', estoque.PRODUTO)}>
+                <td>{estoque.FILIAL}</td>
+                <td>{estoque.PRODUTO}</td>
+                <td>{estoque.SALDO}</td>
+                <td>{estoque.ARMAZEM}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="4">
+                <Spinner animation="border" size="sm" variant="warning" />
+              </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </Table>
 
@@ -166,16 +231,22 @@ export default function EstoquesGer() {
               </tr>
             </thead>
             <tbody>
-              {PCs.map(pc => (
-                <tr key={pc.PEDIDO.concat('', pc.PRODUTO)}>
-                  <td>{pc.PEDIDO}</td>
-                  <td>{pc.PRODUTO}</td>
-                  <td>{pc.QTD}</td>
-                  <td>{pc.QTD_ENT}</td>
-                  <td>{pc.ENTREGA}</td>
-                  <td>{pc.DESC_FORN}</td>
+              {PCs.length > 0 ? (
+                PCs.map(pc => (
+                  <tr key={pc.PEDIDO.concat('', pc.PRODUTO)}>
+                    <td>{pc.PEDIDO}</td>
+                    <td>{pc.PRODUTO}</td>
+                    <td>{pc.QTD}</td>
+                    <td>{pc.QTD_ENT}</td>
+                    <td>{pc.ENTREGA}</td>
+                    <td>{pc.DESC_FORN}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6">{pcPlaceholder}</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </Table>
         </Col>
@@ -195,16 +266,22 @@ export default function EstoquesGer() {
               </tr>
             </thead>
             <tbody>
-              {SCs.map(sc => (
-                <tr key={sc.SC.concat('', sc.PRODUTO)}> 
-                  <td>{sc.SC}</td>
-                  <td>{sc.PRODUTO}</td>
-                  <td>{sc.QTD}</td>
-                  <td>{sc.QTD_ENT}</td>
-                  <td>{sc.ENTREGA}</td>
-                  <td>{sc.OBS}</td>
+              {SCs.length > 0 ? (
+                SCs.map(sc => (
+                  <tr key={sc.SC.concat('', sc.PRODUTO)}>
+                    <td>{sc.SC}</td>
+                    <td>{sc.PRODUTO}</td>
+                    <td>{sc.QTD}</td>
+                    <td>{sc.QTD_ENT}</td>
+                    <td>{sc.ENTREGA}</td>
+                    <td>{sc.OBS}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6">{scPlaceholder}</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </Table>
         </Col>
@@ -222,7 +299,7 @@ export default function EstoquesGer() {
               </tr>
             </thead>
             <tbody>
-              <tr key={"GS125M"}>
+              <tr key="GS125M">
                 <td>GS125</td>
                 <td>9900001327</td>
                 {gs125_01.length > 0 ? (
@@ -232,10 +309,12 @@ export default function EstoquesGer() {
                     ))}
                   </td>
                 ) : (
-                  <td>0</td>
+                  <td colSpan="4">
+                    <Spinner animation="border" size="sm" variant="warning" />
+                  </td>
                 )}
               </tr>
-              <tr key={"GS165M"}>
+              <tr key="GS165M">
                 <td>GS165</td>
                 <td>9900000777</td>
                 {gs165_01.length > 0 ? (
@@ -245,10 +324,12 @@ export default function EstoquesGer() {
                     ))}
                   </td>
                 ) : (
-                  <td>0</td>
+                  <td colSpan="4">
+                    <Spinner animation="border" size="sm" variant="warning" />
+                  </td>
                 )}
               </tr>
-              <tr key={"GS230M"}>
+              <tr key="GS230M">
                 <td>GS230</td>
                 <td>9900000778</td>
                 {gs230_01.length > 0 ? (
@@ -258,10 +339,12 @@ export default function EstoquesGer() {
                     ))}
                   </td>
                 ) : (
-                  <td>0</td>
+                  <td colSpan="4">
+                    <Spinner animation="border" size="sm" variant="warning" />
+                  </td>
                 )}
               </tr>
-              <tr key={"GS260M"}>
+              <tr key="GS260M">
                 <td>GS260</td>
                 <td>9900001100</td>
                 {gs260_01.length > 0 ? (
@@ -271,7 +354,9 @@ export default function EstoquesGer() {
                     ))}
                   </td>
                 ) : (
-                  <td>0</td>
+                  <td colSpan="4">
+                    <Spinner animation="border" size="sm" variant="warning" />
+                  </td>
                 )}
               </tr>
             </tbody>
@@ -291,7 +376,7 @@ export default function EstoquesGer() {
               </tr>
             </thead>
             <tbody>
-              <tr key={"GS125A"}>
+              <tr key="GS125A">
                 <td>GS125</td>
                 <td>9900001335</td>
                 {gs125A_01.length > 0 ? (
@@ -301,10 +386,12 @@ export default function EstoquesGer() {
                     ))}
                   </td>
                 ) : (
-                  <td>0</td>
+                  <td colSpan="4">
+                    <Spinner animation="border" size="sm" variant="warning" />
+                  </td>
                 )}
               </tr>
-              <tr key={"GS165A"}>
+              <tr key="GS165A">
                 <td>GS165</td>
                 <td>9900000786</td>
                 {gs165A_01.length > 0 ? (
@@ -314,10 +401,12 @@ export default function EstoquesGer() {
                     ))}
                   </td>
                 ) : (
-                  <td>0</td>
+                  <td colSpan="4">
+                    <Spinner animation="border" size="sm" variant="warning" />
+                  </td>
                 )}
               </tr>
-              <tr key={"GS230A"}>
+              <tr key="GS230A">
                 <td>GS230</td>
                 <td>9900000821</td>
                 {gs230A_01.length > 0 ? (
@@ -327,10 +416,12 @@ export default function EstoquesGer() {
                     ))}
                   </td>
                 ) : (
-                  <td>0</td>
+                  <td colSpan="4">
+                    <Spinner animation="border" size="sm" variant="warning" />
+                  </td>
                 )}
               </tr>
-              <tr key={"GS260A"}>
+              <tr key="GS260A">
                 <td>GS260</td>
                 <td>9900001101</td>
                 {gs260A_01.length > 0 ? (
@@ -340,7 +431,9 @@ export default function EstoquesGer() {
                     ))}
                   </td>
                 ) : (
-                  <td>0</td>
+                  <td colSpan="4">
+                    <Spinner animation="border" size="sm" variant="warning" />
+                  </td>
                 )}
               </tr>
             </tbody>

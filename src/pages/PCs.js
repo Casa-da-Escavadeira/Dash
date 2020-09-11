@@ -150,7 +150,16 @@ export default function PCs() {
                   )}
                 </td>
                 <td>{pcs.ITEM}</td>
-                <td>{pcs.PRODUTO}</td>
+                <td>
+                  <Link
+                    to={{
+                      pathname: '/prodash',
+                      state: pcs.PRODUTO,
+                    }}
+                  >
+                    {pcs.PRODUTO}
+                  </Link>
+                </td>
                 <td>{pcs.DESCRICAO}</td>
                 <td>{pcs.UM}</td>
                 <td>{pcs.QTD}</td>
