@@ -98,6 +98,7 @@ export default function SCs() {
           placeholder="Solicitação de Compra"
           aria-label="Solicitação de Compra"
           aria-describedby="basic-addon2"
+          autoFocus
           value={scNumber}
           onKeyPress={keyPressed}
           onChange={e => setScNumber(e.target.value)}

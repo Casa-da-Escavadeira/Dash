@@ -105,6 +105,7 @@ export default function PCs() {
           placeholder="Pedido de Compra"
           aria-label="Pedido de Compra"
           aria-describedby="basic-addon2"
+          autoFocus
           value={pcNumber}
           onKeyPress={keyPressed}
           onChange={e => setPcNumber(e.target.value)}

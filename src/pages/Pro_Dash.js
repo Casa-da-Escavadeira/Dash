@@ -314,6 +314,7 @@ export default function Pro_Dash() {
           placeholder="Código do Produto"
           aria-label="Código do Produto"
           aria-describedby="basic-addon2"
+          autoFocus
           value={productNumber}
           onKeyPress={keyPressed}
           onChange={e => setProductNumber(e.target.value)}

@@ -78,6 +78,7 @@ export default function ProductRegister() {
           placeholder="Pesquise por um produto..."
           aria-label="Pesquise por um produto..."
           aria-describedby="basic-addon2"
+          autoFocus
           value={searchValue}
           onKeyPress={keyPressed}
           onChange={e => setSearchValue(e.target.value)}
