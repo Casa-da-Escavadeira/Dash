@@ -27,6 +27,7 @@ export default function Pro_Dash() {
   const [productInfo, setProductInfo] = useState([]);
   const [PCs, setPCs] = useState([]);
   const [SCs, setSCs] = useState([]);
+  const [OPs, setOPs] = useState([]);
   const [EMPs, setEMPs] = useState([]);
   const [OUs, setOUs] = useState([]);
   const [codigoPlaceholder, setCodigoPlaceholder] = useState(
@@ -36,6 +37,9 @@ export default function Pro_Dash() {
     'Pesquise por um código...',
   );
   const [scPlaceholder, setScPlaceholder] = useState(
+    'Pesquise por um código...',
+  );
+  const [opPlaceholder, setOpPlaceholder] = useState(
     'Pesquise por um código...',
   );
   const [ouPlaceholder, setOuPlaceholder] = useState(
@@ -53,6 +57,7 @@ export default function Pro_Dash() {
   const [sumEmp, setSumEmp] = useState('');
   const [sumSCs, setSumSCs] = useState('');
   const [sumPCs, setSumPCs] = useState('');
+  const [sumOPs, setSumOPs] = useState('');
   const [saldoPrev, setSaldoPrev] = useState('');
   const location = useLocation();
 
@@ -78,13 +83,21 @@ export default function Pro_Dash() {
         : 0;
     setSumPCs(totalSumPCs);
 
+    const mapOPs = OPs.map(op => op.QTD - op.QTD_PRO);
+    const totalSumOPs =
+      mapOPs.length > 0
+        ? Number(parseFloat(mapOPs.reduce((a, b) => a + b)).toFixed(2))
+        : 0;
+    setSumOPs(totalSumOPs);
+
     const saldo =
       (almoxarifados[0] !== undefined ? almoxarifados[0].SALDO : 0) +
       sumPCs +
+      sumOPs +
       sumSCs -
       sumEmp;
     setSaldoPrev(Number(parseFloat(saldo).toFixed(2)));
-  }, [EMPs, PCs, SCs, almoxarifados, sumEmp, sumPCs, sumSCs]);
+  }, [EMPs, PCs, SCs, almoxarifados, sumEmp, sumPCs, sumSCs, OPs, sumOPs]);
 
   // Colocar OPs, Onde Usado e opção matriz/filial
 
@@ -105,6 +118,7 @@ export default function Pro_Dash() {
       setStockWarehouse06([]);
       setPCs([]);
       setSCs([]);
+      setOPs([]);
       setOUs([]);
       setEMPs([]);
 
@@ -133,6 +147,9 @@ export default function Pro_Dash() {
         <Spinner animation="border" size="sm" variant="warning" />,
       );
       setScPlaceholder(
+        <Spinner animation="border" size="sm" variant="warning" />,
+      );
+      setOpPlaceholder(
         <Spinner animation="border" size="sm" variant="warning" />,
       );
       setEmpPlaceholder(
@@ -253,6 +270,17 @@ export default function Pro_Dash() {
         setScPlaceholder('Parece que não há SCs...');
       }
       setSCs(response7.data);
+
+      const opsRecieved = await api.get('/ops', {
+        headers: {
+          filial: '0101',
+          produto: product,
+        },
+      });
+      if (opsRecieved.data.length === 0) {
+        setOpPlaceholder('Parece que não há OPs...');
+      }
+      setOPs(opsRecieved.data);
 
       const response9 = await api.get('/ou', {
         headers: {
@@ -507,6 +535,7 @@ export default function Pro_Dash() {
                 <th>Total Empenhado</th>
                 <th>Total em SC</th>
                 <th>Total em PC</th>
+                <th>Total em OP</th>
                 <th>Saldo (previsto)</th>
               </tr>
             </thead>
@@ -515,6 +544,7 @@ export default function Pro_Dash() {
                 <td>{sumEmp}</td>
                 <td>{sumSCs}</td>
                 <td>{sumPCs}</td>
+                <td>{sumOPs}</td>
                 <td>{saldoPrev}</td>
               </tr>
             </tbody>
@@ -611,6 +641,49 @@ export default function Pro_Dash() {
               ) : (
                 <tr>
                   <td colSpan="6">{scPlaceholder}</td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <h5>Ordens de Produção</h5>
+          <Table responsive striped bordered hover>
+            <thead>
+              <tr>
+                <th>OP</th>
+                <th>CÓDIGO</th>
+                <th>DESCRIÇÃO</th>
+                <th>QTD</th>
+                <th>DATA_EMI</th>
+                <th>DATA_INI</th>
+                <th>DATA_FIM</th>
+                <th>CC</th>
+                <th>OBS</th>
+                <th>QTD_PRO</th>
+              </tr>
+            </thead>
+            <tbody>
+              {OPs.length !== 0 ? (
+                OPs.map(op => (
+                  <tr key={op.EMISSAO}>
+                    <td>{op.OP}</td>
+                    <td>{op.PRODUTO}</td>
+                    <td>{op.DESCRICAO}</td>
+                    <td>{op.QTD}</td>
+                    <td>{op.DAT_EMI}</td>
+                    <td>{op.DAT_INI}</td>
+                    <td>{op.DAT_FIM}</td>
+                    <td>{op.CC}</td>
+                    <td>{op.OBS}</td>
+                    <td>{op.QTD_PRO}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="10">{opPlaceholder}</td>
                 </tr>
               )}
             </tbody>

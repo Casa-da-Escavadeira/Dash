@@ -50,12 +50,12 @@ export default function OPsFilial() {
             <th>CÓDIGO</th>
             <th>DESCRIÇÃO</th>
             <th>QTD</th>
-            <th>DATA EMI</th>
-            <th>DATA INI</th>
-            <th>DATA FIM</th>
+            <th>DATA_EMI</th>
+            <th>DATA_INI</th>
+            <th>DATA_FIM</th>
             <th>CC</th>
             <th>OBS</th>
-            <th>QTD PRO</th>
+            <th>QTD_PRO</th>
           </tr>
         </thead>
 
