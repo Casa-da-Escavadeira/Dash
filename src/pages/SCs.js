@@ -120,6 +120,7 @@ export default function SCs() {
             <th>ITEM</th>
             <th>PRODUTO</th>
             <th>DESCRIÇÃO</th>
+            <th>EMISSÃO</th>
             <th>DATA</th>
             <th>UM</th>
             <th>QTD</th>
@@ -145,6 +146,7 @@ export default function SCs() {
                   </Link>
                 </td>
                 <td>{scs.DESCRICAO}</td>
+                <td>{scs.EMISSAO}</td>
                 <td>{scs.ENTREGA}</td>
                 <td>{scs.UM}</td>
                 <td>{scs.QTD}</td>
@@ -156,7 +158,7 @@ export default function SCs() {
             ))
           ) : (
             <tr>
-              <td colSpan="10">{scsPlaceholder}</td>
+              <td colSpan="11">{scsPlaceholder}</td>
             </tr>
           )}
         </tbody>

@@ -125,6 +125,7 @@ export default function PCs() {
         <thead>
           <tr>
             <th>APROVADO</th>
+            <th>EMISSÃO</th>
             <th>ITEM</th>
             <th>PRODUTO</th>
             <th>DESCRIÇÃO</th>
@@ -150,6 +151,7 @@ export default function PCs() {
                     <Badge variant="danger">NÃO</Badge>
                   )}
                 </td>
+                <td>{pcs.EMISSAO}</td>
                 <td>{pcs.ITEM}</td>
                 <td>
                   <Link
@@ -175,7 +177,7 @@ export default function PCs() {
             ))
           ) : (
             <tr>
-              <td colSpan="13">{pcsPlaceholder}</td>
+              <td colSpan="14">{pcsPlaceholder}</td>
             </tr>
           )}
         </tbody>

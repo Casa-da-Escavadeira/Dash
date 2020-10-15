@@ -18,6 +18,9 @@ export default function EstoquesGer() {
   const [gs165A_01, setGS165A_01] = useState([]);
   const [gs230A_01, setGS230A_01] = useState([]);
   const [gs260A_01, setGS260A_01] = useState([]);
+  const [saldosPlaceholder, setSaldosPlaceholder] = useState(
+    <Spinner animation="border" size="sm" variant="warning" />,
+  );
   const [pcPlaceholder, setPcPlaceholder] = useState(
     <Spinner animation="border" size="sm" variant="warning" />,
   );
@@ -27,12 +30,16 @@ export default function EstoquesGer() {
 
   useEffect(() => {
     async function loadEstoques() {
-      const response = await api.get('/estoques', {
+      const saldos = await api.get('/estoques', {
         headers: {
           produto: "GS125', 'GS165', 'GS230', 'GS260",
         },
       });
-      setEstoques(response.data);
+      if (saldos.data.length === 0) {
+        setSaldosPlaceholder('Parece que não há saldo...');
+      } else {
+        setEstoques(saldos.data);
+      }
 
       const pcs = await api.get('/pcs', {
         headers: {
@@ -208,9 +215,7 @@ export default function EstoquesGer() {
             ))
           ) : (
             <tr>
-              <td colSpan="4">
-                <Spinner animation="border" size="sm" variant="warning" />
-              </td>
+              <td colSpan="4">{saldosPlaceholder}</td>
             </tr>
           )}
         </tbody>
