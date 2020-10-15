@@ -168,7 +168,16 @@ export default function PCs() {
                 <td>{pcs.QTD}</td>
                 <td>{pcs.QTD_ENT}</td>
                 <td>R${pcs.PRECO}</td>
-                <td>{pcs.NUMSC}</td>
+                <td>
+                  <Link
+                    to={{
+                      pathname: '/scs',
+                      state: [pcs.NUMSC, pcs.PRODUTO],
+                    }}
+                  >
+                    {pcs.NUMSC}
+                  </Link>
+                </td>
                 <td>{pcs.OBS}</td>
                 <td>{pcs.ENTREGA}</td>
                 <td>{pcs.FORN}</td>

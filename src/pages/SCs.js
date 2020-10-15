@@ -152,7 +152,16 @@ export default function SCs() {
                 <td>{scs.QTD}</td>
                 <td>{scs.QTD_ENT}</td>
                 <td>{scs.OBS}</td>
-                <td>{scs.PC}</td>
+                <td>
+                  <Link
+                    to={{
+                      pathname: '/pcs',
+                      state: [scs.PC, scs.PRODUTO],
+                    }}
+                  >
+                    {scs.PC}
+                  </Link>
+                </td>
                 <td>{scs.PC_ENTREGA}</td>
               </tr>
             ))
