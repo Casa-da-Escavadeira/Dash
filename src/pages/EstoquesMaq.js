@@ -17,7 +17,7 @@ export default function EstoquesMaq() {
       const response = await api.get('/estoques', {
         headers: {
           filial: '0101,0102',
-          grupo: '0500,0501,0502,0503,0510,0520,0530,0540,0550,0560,0570',
+          grupo: '0094,0500,0501,0502,0503,0510,0520,0530,0540,0550,0560,0570',
         },
       });
       if (response.data.length === 0) {
