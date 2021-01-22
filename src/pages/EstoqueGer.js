@@ -208,7 +208,16 @@ export default function EstoquesGer() {
             estoques.map(estoque => (
               <tr key={estoque.FILIAL.concat('', estoque.PRODUTO)}>
                 <td>{estoque.FILIAL}</td>
-                <td>{estoque.PRODUTO}</td>
+                <td>
+                  <Link
+                    to={{
+                      pathname: '/prodash',
+                      state: estoque.PRODUTO,
+                    }}
+                  >
+                    {estoque.PRODUTO}
+                  </Link>
+                </td>
                 <td>{estoque.SALDO}</td>
                 <td>{estoque.ARMAZEM}</td>
               </tr>
@@ -240,7 +249,16 @@ export default function EstoquesGer() {
                 PCs.map(pc => (
                   <tr key={pc.PEDIDO.concat('', pc.PRODUTO)}>
                     <td>{pc.PEDIDO}</td>
-                    <td>{pc.PRODUTO}</td>
+                    <td>
+                      <Link
+                        to={{
+                          pathname: '/prodash',
+                          state: pc.PRODUTO,
+                        }}
+                      >
+                        {pc.PRODUTO}
+                      </Link>
+                    </td>
                     <td>{pc.QTD}</td>
                     <td>{pc.QTD_ENT}</td>
                     <td>{pc.ENTREGA}</td>
@@ -275,7 +293,16 @@ export default function EstoquesGer() {
                 SCs.map(sc => (
                   <tr key={sc.SC.concat('', sc.PRODUTO)}>
                     <td>{sc.SC}</td>
-                    <td>{sc.PRODUTO}</td>
+                    <td>
+                      <Link
+                        to={{
+                          pathname: '/prodash',
+                          state: sc.PRODUTO,
+                        }}
+                      >
+                        {sc.PRODUTO}
+                      </Link>
+                    </td>
                     <td>{sc.QTD}</td>
                     <td>{sc.QTD_ENT}</td>
                     <td>{sc.ENTREGA}</td>
@@ -306,7 +333,16 @@ export default function EstoquesGer() {
             <tbody>
               <tr key="GS125M">
                 <td>GS125</td>
-                <td>9900001327</td>
+                <td>
+                  <Link
+                    to={{
+                      pathname: '/prodash',
+                      state: '9900001327',
+                    }}
+                  >
+                    9900001327
+                  </Link>
+                </td>
                 {gs125_01.length > 0 ? (
                   <td>
                     {gs125_01.map(gs125 => (
@@ -321,7 +357,16 @@ export default function EstoquesGer() {
               </tr>
               <tr key="GS165M">
                 <td>GS165</td>
-                <td>9900000777</td>
+                <td>
+                  <Link
+                    to={{
+                      pathname: '/prodash',
+                      state: '9900000777',
+                    }}
+                  >
+                    9900000777
+                  </Link>
+                </td>
                 {gs165_01.length > 0 ? (
                   <td>
                     {gs165_01.map(gs165 => (
@@ -336,7 +381,16 @@ export default function EstoquesGer() {
               </tr>
               <tr key="GS230M">
                 <td>GS230</td>
-                <td>9900000778</td>
+                <td>
+                  <Link
+                    to={{
+                      pathname: '/prodash',
+                      state: '9900000778',
+                    }}
+                  >
+                    9900000778
+                  </Link>
+                </td>
                 {gs230_01.length > 0 ? (
                   <td>
                     {gs230_01.map(gs230 => (
@@ -351,7 +405,16 @@ export default function EstoquesGer() {
               </tr>
               <tr key="GS260M">
                 <td>GS260</td>
-                <td>9900001100</td>
+                <td>
+                  <Link
+                    to={{
+                      pathname: '/prodash',
+                      state: '9900001100',
+                    }}
+                  >
+                    9900001100
+                  </Link>
+                </td>
                 {gs260_01.length > 0 ? (
                   <td>
                     {gs260_01.map(gs260 => (
@@ -383,7 +446,16 @@ export default function EstoquesGer() {
             <tbody>
               <tr key="GS125A">
                 <td>GS125</td>
-                <td>9900001335</td>
+                <td>
+                  <Link
+                    to={{
+                      pathname: '/prodash',
+                      state: '9900001335',
+                    }}
+                  >
+                    9900001335
+                  </Link>
+                </td>
                 {gs125A_01.length > 0 ? (
                   <td>
                     {gs125A_01.map(gs125 => (
@@ -398,7 +470,16 @@ export default function EstoquesGer() {
               </tr>
               <tr key="GS165A">
                 <td>GS165</td>
-                <td>9900000786</td>
+                <td>
+                  <Link
+                    to={{
+                      pathname: '/prodash',
+                      state: '9900000786',
+                    }}
+                  >
+                    9900000786
+                  </Link>
+                </td>
                 {gs165A_01.length > 0 ? (
                   <td>
                     {gs165A_01.map(gs165 => (
@@ -413,7 +494,16 @@ export default function EstoquesGer() {
               </tr>
               <tr key="GS230A">
                 <td>GS230</td>
-                <td>9900000821</td>
+                <td>
+                  <Link
+                    to={{
+                      pathname: '/prodash',
+                      state: '9900000821',
+                    }}
+                  >
+                    9900000821
+                  </Link>
+                </td>
                 {gs230A_01.length > 0 ? (
                   <td>
                     {gs230A_01.map(gs230 => (
@@ -428,7 +518,16 @@ export default function EstoquesGer() {
               </tr>
               <tr key="GS260A">
                 <td>GS260</td>
-                <td>9900001101</td>
+                <td>
+                  <Link
+                    to={{
+                      pathname: '/prodash',
+                      state: '9900001101',
+                    }}
+                  >
+                    9900001101
+                  </Link>
+                </td>
                 {gs260A_01.length > 0 ? (
                   <td>
                     {gs260A_01.map(gs260 => (
