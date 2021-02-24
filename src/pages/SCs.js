@@ -156,7 +156,7 @@ export default function SCs() {
                   <Link
                     to={{
                       pathname: '/pcs',
-                      state: [scs.PC, scs.PRODUTO],
+                      state: [scs.PC, 'Número'],
                     }}
                   >
                     {scs.PC}

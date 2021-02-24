@@ -6,6 +6,8 @@ import {
   FormControl,
   Badge,
   Row,
+  DropdownButton,
+  Dropdown,
   Col,
   Spinner,
 } from 'react-bootstrap';
@@ -16,37 +18,55 @@ import './PCs.css';
 import api from '../services/api';
 
 export default function PCs() {
-  const [pcNumber, setPcNumber] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const [dataPCs, setDataPCs] = useState([]);
   const [sumPCs, setSumPCs] = useState([]);
   const [pcsPlaceholder, setPcsPlaceholder] = useState('Pesquise por um PC...');
+  const [filter, setFilter] = useState('Pesquisar por número do PC');
   const location = useLocation();
 
   const handleSubmit = useCallback(
-    async search => {
+    async (searchInput, filterInput) => {
+      let searchVar = searchValue.toUpperCase().trim();
+      let filterVar = filter;
+      let response;
       setDataPCs([]);
       setPcsPlaceholder(
         <Spinner animation="border" size="sm" variant="warning" />,
       );
-      let pc = pcNumber.trim();
 
-      if (search > 0) {
-        pc = search.toUpperCase().trim();
+      if (searchInput > 0) {
+        searchVar = searchInput.toUpperCase().trim();
       }
-
-      const response = await api.get('/pcs', {
-        headers: {
-          filial: '0101',
-          pc,
-        },
-      });
-      if (response.data.length === 0) {
-        setPcsPlaceholder('Parece que não há um PC com esse número...');
+      if (filterInput !== undefined) {
+        filterVar = filterInput;
+      }
+      if (filterVar === 'CNPJ') {
+        response = await api.get('/pcs', {
+          headers: {
+            filial: '0101',
+            finalizado: true,
+            cnpj: searchVar,
+          },
+        });
+        if (response.data.length === 0) {
+          setPcsPlaceholder('Parece que não há um PC com esse CNPJ...');
+        }
+      } else {
+        response = await api.get('/pcs', {
+          headers: {
+            filial: '0101',
+            pc: searchVar,
+          },
+        });
+        if (response.data.length === 0) {
+          setPcsPlaceholder('Parece que não há um PC com esse número...');
+        }
       }
 
       setDataPCs(response.data);
     },
-    [pcNumber],
+    [searchValue, filter],
   );
 
   useEffect(() => {
@@ -64,11 +84,19 @@ export default function PCs() {
 
   useEffect(() => {
     if (location.state) {
-      setPcNumber(location.state[0]);
-      handleSubmit(location.state[0]);
+      setFilter(location.state[1]);
+      setSearchValue(location.state[0]);
+      handleSubmit(location.state[0], location.state[1]);
     }
     // eslint-disable-next-line
   }, [location.state]);
+
+  const handlePC = useCallback(
+    async pcInput => {
+      handleSubmit(pcInput, 'Número');
+    },
+    [handleSubmit],
+  );
 
   return (
     <div className="main-container">
@@ -106,10 +134,21 @@ export default function PCs() {
           aria-label="Pedido de Compra"
           aria-describedby="basic-addon2"
           autoFocus
-          value={pcNumber}
+          value={searchValue}
           onKeyPress={keyPressed}
-          onChange={e => setPcNumber(e.target.value)}
+          onChange={e => setSearchValue(e.target.value)}
         />
+        <DropdownButton
+          as={InputGroup.Append}
+          variant="outline-warning"
+          title={filter}
+          id="input-group-dropdown-2"
+        >
+          <Dropdown.Item onClick={() => setFilter('Número')}>
+            Número
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => setFilter('CNPJ')}>CNPJ</Dropdown.Item>
+        </DropdownButton>
         <InputGroup.Append>
           <Button
             onClick={() => handleSubmit()}
@@ -125,6 +164,7 @@ export default function PCs() {
         <thead>
           <tr>
             <th>APROVADO</th>
+            <th>PC</th>
             <th>EMISSÃO</th>
             <th>ITEM</th>
             <th>PRODUTO</th>
@@ -150,6 +190,11 @@ export default function PCs() {
                   ) : (
                     <Badge variant="danger">NÃO</Badge>
                   )}
+                </td>
+                <td>
+                  <Button variant="link" onClick={() => handlePC(pcs.PEDIDO)}>
+                    {pcs.PEDIDO}
+                  </Button>
                 </td>
                 <td>{pcs.EMISSAO}</td>
                 <td>{pcs.ITEM}</td>
@@ -186,7 +231,7 @@ export default function PCs() {
             ))
           ) : (
             <tr>
-              <td colSpan="14">{pcsPlaceholder}</td>
+              <td colSpan="15">{pcsPlaceholder}</td>
             </tr>
           )}
         </tbody>

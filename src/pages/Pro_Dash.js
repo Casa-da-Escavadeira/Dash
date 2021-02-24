@@ -582,7 +582,7 @@ export default function Pro_Dash() {
                       <Link
                         to={{
                           pathname: '/pcs',
-                          state: [pc.PEDIDO, productNumber],
+                          state: [pc.PEDIDO, 'Número'],
                         }}
                       >
                         {pc.PEDIDO}
