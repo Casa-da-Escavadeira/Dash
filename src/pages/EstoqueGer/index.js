@@ -40,7 +40,7 @@ export default function EstoquesGer() {
       }
 
       const pcs = await api.get(
-        `/pcs?filial=0101&finalizado=true&produto=9900001327',%20'9900000777',%20'9900000778',%20'9900001100',%20'9900001335',%20'9900000786',%20'9900000821',%20'9900001101`,
+        `/pcs?filial=0101&finalizado=true&produto=9900001327',%20'9900000777',%20'9900000778',%20'9900001100',%20'9900001718',%20'9900000786',%20'9900000821',%20'9900001101`,
       );
       if (pcs.data.length === 0) {
         setPcPlaceholder('Parece que não há PCs...');
@@ -49,7 +49,7 @@ export default function EstoquesGer() {
       }
 
       const scs = await api.get(
-        `/scs?filial=0101&finalizado=true&produto=9900001327',%20'9900000777',%20'9900000778',%20'9900001100',%20'9900001335',%20'9900000786',%20'9900000821',%20'9900001101`,
+        `/scs?filial=0101&finalizado=true&produto=9900001327',%20'9900000777',%20'9900000778',%20'9900001100',%20'9900001718',%20'9900000786',%20'9900000821',%20'9900001101`,
       );
       if (scs.data.length === 0) {
         setScPlaceholder('Parece que não há PCs...');
@@ -97,7 +97,7 @@ export default function EstoquesGer() {
       // alternadores
 
       const response5 = await api.get(
-        '/estoques?filial=0101&produto=9900001335&armazem=01',
+        '/estoques?filial=0101&produto=9900001718&armazem=01',
       );
       if (response5.data.length === 0) {
         setGS125A_01([{ SALDO: 0 }]);
@@ -407,10 +407,10 @@ export default function EstoquesGer() {
                     <Link
                       to={{
                         pathname: '/prodash',
-                        state: '9900001335',
+                        state: '9900001718',
                       }}
                     >
-                      9900001335
+                      9900001718
                     </Link>
                   </td>
                   {gs125A_01.length > 0 ? (
