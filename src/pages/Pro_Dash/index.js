@@ -13,6 +13,8 @@ import {
 import { useLocation } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
+import { add, format, getWeek, startOfWeek } from 'date-fns';
+import toISODate from '../../utils/toISODate';
 import { Container as Cont } from './styles';
 
 import api from '../../services/api';
@@ -49,6 +51,9 @@ export default function Pro_Dash() {
   const [empPlaceholder, setEmpPlaceholder] = useState(
     'Pesquise por um código...',
   );
+  const [plannigPlaceholder, setPlanningPlaceholder] = useState(
+    'Pesquise por um código...',
+  );
   const [almoxarifadoPlaceholder, setAlmoxarifadoPlaceholder] = useState(0);
   const [supermercadosPlaceholder, setSupermercadosPlaceholder] = useState(0);
   const [posPlaceholder, setPosPlaceholder] = useState(0);
@@ -61,6 +66,11 @@ export default function Pro_Dash() {
   const [sumOPs, setSumOPs] = useState('');
   const [saldoPrev, setSaldoPrev] = useState('');
   const location = useLocation();
+  const currentWeek = getWeek(new Date());
+  const weeks = [
+    'ATR',
+    ...Array.from({ length: 12 }, (_, i) => i + currentWeek),
+  ];
 
   useEffect(() => {
     const mapEmpenhos = EMPs.map(emp => emp.SALDO);
@@ -159,6 +169,9 @@ export default function Pro_Dash() {
       setOuPlaceholder(
         <Spinner animation="border" size="sm" variant="warning" />,
       );
+      setPlanningPlaceholder(
+        <Spinner animation="border" size="sm" variant="warning" />,
+      );
 
       const productInfoResponse = await api.get(
         `/register?filial=0101&produto=${product}`,
@@ -228,7 +241,17 @@ export default function Pro_Dash() {
       if (response6.data.length === 0) {
         setPcPlaceholder('Parece que não há PCs...');
       }
-      setPCs(response6.data);
+      const reponseUpdated6 = response6.data.map(item => {
+        const itemUpdated = {
+          ...item,
+          WEEK:
+            getWeek(toISODate(item.ENTREGA)) < currentWeek
+              ? 'ATR'
+              : getWeek(toISODate(item.ENTREGA)),
+        };
+        return itemUpdated;
+      });
+      setPCs(reponseUpdated6);
 
       const response7 = await api.get(
         `/scs?filial=0101&finalizado=true&produto=${product}`,
@@ -236,7 +259,17 @@ export default function Pro_Dash() {
       if (response7.data.length === 0) {
         setScPlaceholder('Parece que não há SCs...');
       }
-      setSCs(response7.data);
+      const reponseUpdated7 = response7.data.map(item => {
+        const itemUpdated = {
+          ...item,
+          WEEK:
+            getWeek(toISODate(item.ENTREGA)) < currentWeek
+              ? 'ATR'
+              : getWeek(toISODate(item.ENTREGA)),
+        };
+        return itemUpdated;
+      });
+      setSCs(reponseUpdated7);
 
       const opsRecieved = await api.get(
         `/ops?filial=0101&produto=${product}&fechado=false`,
@@ -260,9 +293,19 @@ export default function Pro_Dash() {
       if (response8.data.length === 0) {
         setEmpPlaceholder('Parece que não há empenhos...');
       }
-      setEMPs(response8.data);
+      const reponseUpdated8 = response8.data.map(item => {
+        const itemUpdated = {
+          ...item,
+          WEEK:
+            getWeek(toISODate(item.ENTREGA)) < currentWeek
+              ? 'ATR'
+              : getWeek(toISODate(item.ENTREGA)),
+        };
+        return itemUpdated;
+      });
+      setEMPs(reponseUpdated8);
     },
-    [productNumber],
+    [productNumber, currentWeek],
   );
 
   // submit on press Enter
@@ -331,7 +374,7 @@ export default function Pro_Dash() {
               <tbody>
                 {productInfo.length !== 0 ? (
                   productInfo.map(product => (
-                    <tr key={product.DESCRICAO}>
+                    <tr>
                       <td>{product.DESCRICAO}</td>
                       <td>{product.UM}</td>
                       <td>{product.PP}</td>
@@ -359,7 +402,7 @@ export default function Pro_Dash() {
               <tbody>
                 {almoxarifados.length !== 0 ? (
                   almoxarifados.map(almoxarifado => (
-                    <tr key={almoxarifado.SALDO}>
+                    <tr>
                       <td>{almoxarifado.SALDO}</td>
                     </tr>
                   ))
@@ -382,7 +425,7 @@ export default function Pro_Dash() {
               <tbody>
                 {supermecados.length !== 0 ? (
                   supermecados.map(supermecado => (
-                    <tr key={supermecado.SALDO}>
+                    <tr>
                       <td>{supermecado.SALDO}</td>
                     </tr>
                   ))
@@ -405,7 +448,7 @@ export default function Pro_Dash() {
               <tbody>
                 {stockWarehouse06.length !== 0 ? (
                   stockWarehouse06.map(stock06 => (
-                    <tr key={stock06.SALDO}>
+                    <tr>
                       <td>{stock06.SALDO}</td>
                     </tr>
                   ))
@@ -428,7 +471,7 @@ export default function Pro_Dash() {
               <tbody>
                 {quebrados.length !== 0 ? (
                   quebrados.map(quebrado => (
-                    <tr key={quebrado.SALDO}>
+                    <tr>
                       <td>{quebrado.SALDO}</td>
                     </tr>
                   ))
@@ -451,7 +494,7 @@ export default function Pro_Dash() {
               <tbody>
                 {pos.length !== 0 ? (
                   pos.map(posItem => (
-                    <tr key={posItem.SALDO}>
+                    <tr>
                       <td>{posItem.SALDO}</td>
                     </tr>
                   ))
@@ -481,6 +524,263 @@ export default function Pro_Dash() {
                   <tr>
                     <td>{vixPlaceholder}</td>
                   </tr>
+                )}
+              </tbody>
+            </Table>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <h5>Planejamento Semanal</h5>
+
+            <Table responsive striped bordered hover>
+              <thead>
+                <tr>
+                  <th style={{ paddingBlock: '35px' }}>#</th>
+                  {weeks.map(weekNumber => {
+                    if (weekNumber === 'ATR') {
+                      return <th style={{ paddingBlock: '35px' }}>ATRASO</th>;
+                    }
+                    return (
+                      <th>
+                        WK{weekNumber}
+                        <br />
+                        <p style={{ fontSize: '12px', marginBottom: '4px' }}>
+                          {format(
+                            startOfWeek(
+                              add(new Date(), {
+                                weeks: weekNumber - currentWeek,
+                              }),
+                              { weekStartsOn: 1 },
+                            ),
+                            'dd/MM',
+                          )}
+                          <br />
+                          {format(
+                            startOfWeek(
+                              add(new Date(), {
+                                weeks: weekNumber - currentWeek,
+                              }),
+                              { weekStartsOn: 5 },
+                            ),
+                            'dd/MM',
+                          )}
+                        </p>
+                      </th>
+                    );
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {EMPs.length !== 0 ? (
+                  <>
+                    <tr>
+                      <td>EMPENHO</td>
+
+                      {weeks.map(weekNumber => {
+                        const empWK = EMPs.reduce((acc, value) => {
+                          if (value.WEEK === weekNumber) {
+                            return acc + value.SALDO;
+                          }
+                          return acc;
+                        }, 0);
+
+                        if (weekNumber === 'ATR' && empWK !== 0) {
+                          return (
+                            <td
+                              style={{
+                                color: '#9C0006',
+                                backgroundColor: '#FFC7CE',
+                              }}
+                            >
+                              {Math.round((empWK + Number.EPSILON) * 100) / 100}
+                            </td>
+                          );
+                        }
+
+                        return (
+                          <td>
+                            {Math.round((empWK + Number.EPSILON) * 100) / 100}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                    <tr>
+                      <td>PC</td>
+
+                      {weeks.map(weekNumber => {
+                        const pcWK = PCs.reduce((acc, value) => {
+                          if (value.WEEK === weekNumber) {
+                            return acc + value.SALDO;
+                          }
+                          return acc;
+                        }, 0);
+                        if (weekNumber === 'ATR' && pcWK !== 0) {
+                          return (
+                            <td
+                              style={{
+                                color: '#9C0006',
+                                backgroundColor: '#FFC7CE',
+                              }}
+                            >
+                              {Math.round((pcWK + Number.EPSILON) * 100) / 100}
+                            </td>
+                          );
+                        }
+
+                        return (
+                          <td>
+                            {Math.round((pcWK + Number.EPSILON) * 100) / 100}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                    <tr>
+                      <td>SALDO</td>
+
+                      {weeks.map(weekNumber => {
+                        const empWK = EMPs.reduce((acc, value) => {
+                          if (value.WEEK === 'ATR') {
+                            return acc + value.SALDO;
+                          }
+                          if (value.WEEK <= weekNumber) {
+                            return acc + value.SALDO;
+                          }
+                          return acc;
+                        }, 0);
+                        const pcWK = PCs.reduce((acc, value) => {
+                          if (value.WEEK === 'ATR') {
+                            return acc + value.SALDO;
+                          }
+                          if (value.WEEK <= weekNumber) {
+                            return acc + value.SALDO;
+                          }
+                          return acc;
+                        }, 0);
+                        const scWK = SCs.reduce((acc, value) => {
+                          if (value.WEEK === 'ATR') {
+                            return acc + value.SALDO;
+                          }
+                          if (value.WEEK <= weekNumber) {
+                            return acc + value.SALDO;
+                          }
+                          return acc;
+                        }, 0);
+
+                        if (
+                          pcWK +
+                            scWK -
+                            empWK +
+                            almoxarifados[0].SALDO +
+                            stockWarehouse06[0].SALDO <
+                          0
+                        ) {
+                          return (
+                            <td
+                              style={{
+                                color: '#9C0006',
+                                backgroundColor: '#FFC7CE',
+                              }}
+                            >
+                              {Math.round(
+                                (pcWK +
+                                  scWK -
+                                  empWK +
+                                  almoxarifados[0].SALDO +
+                                  stockWarehouse06[0].SALDO +
+                                  Number.EPSILON) *
+                                  100,
+                              ) / 100}
+                            </td>
+                          );
+                        }
+
+                        if (
+                          pcWK +
+                            scWK -
+                            empWK +
+                            almoxarifados[0].SALDO +
+                            stockWarehouse06[0].SALDO ===
+                          0
+                        ) {
+                          return (
+                            <td
+                              style={{
+                                color: '#9C6500',
+                                backgroundColor: '#FFEB9C',
+                              }}
+                            >
+                              {Math.round(
+                                (pcWK +
+                                  scWK -
+                                  empWK +
+                                  almoxarifados[0].SALDO +
+                                  stockWarehouse06[0].SALDO +
+                                  Number.EPSILON) *
+                                  100,
+                              ) / 100}
+                            </td>
+                          );
+                        }
+
+                        return (
+                          <td
+                            style={{
+                              color: '#006100',
+                              backgroundColor: '#C6EFCE',
+                            }}
+                          >
+                            {Math.round(
+                              (pcWK +
+                                scWK -
+                                empWK +
+                                almoxarifados[0].SALDO +
+                                stockWarehouse06[0].SALDO +
+                                Number.EPSILON) *
+                                100,
+                            ) / 100}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                    <tr>
+                      <td>SC</td>
+
+                      {weeks.map(weekNumber => {
+                        const scWK = SCs.reduce((acc, value) => {
+                          if (value.WEEK === weekNumber) {
+                            return acc + value.SALDO;
+                          }
+                          return acc;
+                        }, 0);
+
+                        if (weekNumber === 'ATR' && scWK !== 0) {
+                          return (
+                            <td
+                              style={{
+                                color: '#9C0006',
+                                backgroundColor: '#FFC7CE',
+                              }}
+                            >
+                              {Math.round((scWK + Number.EPSILON) * 100) / 100}
+                            </td>
+                          );
+                        }
+
+                        return (
+                          <td>
+                            {Math.round((scWK + Number.EPSILON) * 100) / 100}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  </>
+                ) : (
+                  <>
+                    <tr>
+                      <td colSpan="14">{plannigPlaceholder}</td>
+                    </tr>
+                  </>
                 )}
               </tbody>
             </Table>
@@ -521,6 +821,7 @@ export default function Pro_Dash() {
                   <th>PC</th>
                   <th>QTD</th>
                   <th>QTD_ENT</th>
+                  <th>SALDO</th>
                   <th>DATA</th>
                   <th>FORN</th>
                 </tr>
@@ -528,7 +829,7 @@ export default function Pro_Dash() {
               <tbody>
                 {PCs.length !== 0 ? (
                   PCs.map(pc => (
-                    <tr key={pc.EMISSAO}>
+                    <tr>
                       <td>{pc.EMISSAO}</td>
                       <td>
                         {pc.APROVADO === 'L' ? (
@@ -549,6 +850,7 @@ export default function Pro_Dash() {
                       </td>
                       <td>{pc.QTD}</td>
                       <td>{pc.QTD_ENT}</td>
+                      <td>{pc.SALDO}</td>
                       <td>{pc.ENTREGA}</td>
                       <td>{pc.DESC_FORN}</td>
                     </tr>
@@ -579,7 +881,7 @@ export default function Pro_Dash() {
               <tbody>
                 {SCs.length !== 0 ? (
                   SCs.map(sc => (
-                    <tr key={sc.EMISSAO}>
+                    <tr>
                       <td>{sc.EMISSAO}</td>
                       <td>
                         <Link
@@ -627,7 +929,7 @@ export default function Pro_Dash() {
               <tbody>
                 {OPs.length !== 0 ? (
                   OPs.map(op => (
-                    <tr key={op.EMISSAO}>
+                    <tr>
                       <td>{op.OP}</td>
                       <td>{op.PRODUTO}</td>
                       <td>{op.DESCRICAO}</td>
@@ -662,7 +964,7 @@ export default function Pro_Dash() {
               <tbody>
                 {OUs.length !== 0 ? (
                   OUs.map(ou => (
-                    <tr key={ou.CODIGO}>
+                    <tr>
                       <td>{ou.CODIGO}</td>
                       <td>{ou.QUANTIDADE}</td>
                     </tr>
@@ -690,7 +992,7 @@ export default function Pro_Dash() {
               <tbody>
                 {EMPs.length !== 0 ? (
                   EMPs.map(emp => (
-                    <tr key={emp.DEC_OP}>
+                    <tr>
                       <td>{emp.DEC_OP}</td>
                       <td>{emp.OP}</td>
                       <td>{emp.SALDO}</td>

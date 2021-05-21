@@ -167,6 +167,7 @@ export default function PCs() {
               <th>UM</th>
               <th>QTD</th>
               <th>QTD_ENT</th>
+              <th>SALDO</th>
               <th>PREÇO</th>
               <th>NUM_SC</th>
               <th>OBS</th>
@@ -207,6 +208,7 @@ export default function PCs() {
                   <td>{pcs.UM}</td>
                   <td>{pcs.QTD}</td>
                   <td>{pcs.QTD_ENT}</td>
+                  <td>{pcs.SALDO}</td>
                   <td>R${pcs.PRECO}</td>
                   <td>
                     <Link

@@ -121,7 +121,8 @@ export default function SCs() {
               <th>DATA</th>
               <th>UM</th>
               <th>QTD</th>
-              <th>EM_PC</th>
+              <th>QTD_ENT</th>
+              <th>SALDO</th>
               <th>OBS</th>
               <th>PC</th>
               <th>ENTREGA</th>
@@ -148,6 +149,7 @@ export default function SCs() {
                   <td>{scs.UM}</td>
                   <td>{scs.QTD}</td>
                   <td>{scs.QTD_ENT}</td>
+                  <td>{scs.SALDO}</td>
                   <td>{scs.OBS}</td>
                   <td>
                     <Link
