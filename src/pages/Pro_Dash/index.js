@@ -51,9 +51,7 @@ export default function Pro_Dash() {
   const [empPlaceholder, setEmpPlaceholder] = useState(
     'Pesquise por um código...',
   );
-  const [plannigPlaceholder, setPlanningPlaceholder] = useState(
-    'Pesquise por um código...',
-  );
+
   const [almoxarifadoPlaceholder, setAlmoxarifadoPlaceholder] = useState(0);
   const [supermercadosPlaceholder, setSupermercadosPlaceholder] = useState(0);
   const [posPlaceholder, setPosPlaceholder] = useState(0);
@@ -167,9 +165,6 @@ export default function Pro_Dash() {
         <Spinner animation="border" size="sm" variant="warning" />,
       );
       setOuPlaceholder(
-        <Spinner animation="border" size="sm" variant="warning" />,
-      );
-      setPlanningPlaceholder(
         <Spinner animation="border" size="sm" variant="warning" />,
       );
 
@@ -778,7 +773,7 @@ export default function Pro_Dash() {
                 ) : (
                   <>
                     <tr>
-                      <td colSpan="14">{plannigPlaceholder}</td>
+                      <td colSpan="14">{empPlaceholder}</td>
                     </tr>
                   </>
                 )}
