@@ -11,10 +11,13 @@ import {
   Col,
   Spinner,
   Container,
+  Modal,
+  Form,
 } from 'react-bootstrap';
 import { useLocation, Link } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { Container as Cont } from './styles';
+import { generatePrintCode } from '../../utils/generatePrintCode';
 
 import api from '../../services/api';
 
@@ -90,8 +93,41 @@ export default function PCs() {
     [handleSubmit],
   );
 
+  // modal handle
+
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
+  const [textPrint, setTextPrint] = useState('');
+
+  function handleClose() {
+    setIsPrintModalOpen(false);
+  }
+
+  const handlePrintPC = () => {
+    const generatedPrintText = generatePrintCode(dataPCs);
+    setTextPrint(generatedPrintText.join(''));
+    setIsPrintModalOpen(true);
+  };
+
   return (
     <Cont>
+      <Modal show={isPrintModalOpen} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Modal heading</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Control as="textarea" placeholder="Leave a comment here">
+            {textPrint}
+          </Form.Control>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Container fluid className="justify-content-center">
         {location.state ? (
           <Row>
@@ -119,7 +155,6 @@ export default function PCs() {
             </Col>
           </Row>
         )}
-
         <h1>Pedidos de Compra</h1>
         <InputGroup className="mb-3" onSubmit={handleSubmit}>
           <FormControl
@@ -149,12 +184,19 @@ export default function PCs() {
               onClick={() => handleSubmit()}
               type="submit"
               variant="outline-warning"
+              style={{ borderRadius: '0 5px 5px 0' }}
             >
               Enviar
             </Button>
           </InputGroup.Append>
+          <Button
+            style={{ marginLeft: 5 }}
+            variant="outline-warning margin-left"
+            onClick={handlePrintPC}
+          >
+            Imprimir
+          </Button>
         </InputGroup>
-
         <Table responsive striped bordered hover>
           <thead>
             <tr>
@@ -228,7 +270,7 @@ export default function PCs() {
               ))
             ) : (
               <tr>
-                <td colSpan="15">{pcsPlaceholder}</td>
+                <td colSpan="16">{pcsPlaceholder}</td>
               </tr>
             )}
           </tbody>
