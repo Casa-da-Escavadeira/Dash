@@ -11,8 +11,6 @@ import {
   Col,
   Spinner,
   Container,
-  Modal,
-  Form,
 } from 'react-bootstrap';
 import { useLocation, Link } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -20,6 +18,7 @@ import { Container as Cont } from './styles';
 import { generatePrintCode } from '../../utils/generatePrintCode';
 
 import api from '../../services/api';
+import PrintModal from '../../components/PrintModal';
 
 export default function PCs() {
   const [searchValue, setSearchValue] = useState('');
@@ -110,24 +109,11 @@ export default function PCs() {
 
   return (
     <Cont>
-      <Modal show={isPrintModalOpen} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Control as="textarea" placeholder="Leave a comment here">
-            {textPrint}
-          </Form.Control>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <PrintModal
+        textPrint={textPrint}
+        isOpen={isPrintModalOpen}
+        handleClose={handleClose}
+      />
       <Container fluid className="justify-content-center">
         {location.state ? (
           <Row>
