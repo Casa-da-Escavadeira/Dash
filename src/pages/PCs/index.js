@@ -23,6 +23,7 @@ import PrintModal from '../../components/PrintModal';
 export default function PCs() {
   const [searchValue, setSearchValue] = useState('');
   const [dataPCs, setDataPCs] = useState([]);
+  const [formattedPCs, setFormattedPCs] = useState([]);
   const [sumPCs, setSumPCs] = useState([]);
   const [pcsPlaceholder, setPcsPlaceholder] = useState('Pesquise por um PC...');
   const [filter, setFilter] = useState('Pesquisar por número do PC');
@@ -102,17 +103,22 @@ export default function PCs() {
   }
 
   const handlePrintPC = () => {
+    const updatedPCs = dataPCs.map(pc => ({
+      ...pc,
+      id: pc.ITEM,
+    }));
+    setFormattedPCs(updatedPCs.filter(row => row.SALDO > 0));
     const generatedPrintText = generatePrintCode(dataPCs);
     setTextPrint(generatedPrintText.join(''));
     setIsPrintModalOpen(true);
   };
-
   return (
     <Cont>
       <PrintModal
         textPrint={textPrint}
         isOpen={isPrintModalOpen}
         handleClose={handleClose}
+        pcsData={formattedPCs}
       />
       <Container fluid className="justify-content-center">
         {location.state ? (
@@ -180,7 +186,7 @@ export default function PCs() {
             variant="outline-warning margin-left"
             onClick={handlePrintPC}
           >
-            Imprimir
+            Gerar código para impressão
           </Button>
         </InputGroup>
         <Table responsive striped bordered hover>

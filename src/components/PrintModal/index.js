@@ -1,24 +1,41 @@
-import React, { useState, useCallback } from 'react';
-import { Button, Modal, Form } from 'react-bootstrap';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { Button, Modal, Overlay, Tooltip } from 'react-bootstrap';
 import { DataGrid } from '@material-ui/data-grid';
 import { Container as Cont } from './styles';
+import { generatePrintCode } from '../../utils/generatePrintCode';
 
-export default function PrintModal({ textPrint, isOpen, handleClose }) {
+export default function PrintModal({ isOpen, handleClose, pcsData }) {
   const [selectionModel, setSelectionModel] = useState([]);
   const [dataSelectionModel, setDataSelectionModel] = useState([]);
-  const [rows, setRows] = useState([
-    { id: 1, name: 'Lucas', age: 20 },
-    { id: 2, name: 'Jão', age: 10 },
-  ]);
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    setRows(pcsData);
+  }, [pcsData]);
+
+  const [show, setShow] = useState(false);
+  const target = useRef(null);
+
+  const columns = [
+    { field: 'PRODUTO', headerName: 'PRODUTO', width: 150 },
+    { field: 'DESCRICAO', headerName: 'DESCRICAO', width: 720 },
+    {
+      field: 'SALDO',
+      headerName: 'SALDO',
+      width: 150,
+      type: 'number',
+      editable: true,
+    },
+  ];
 
   const handleEditCellChangeCommitted = useCallback(
     ({ id, field, props }) => {
-      if (field === 'age') {
+      if (field === 'SALDO') {
         const data = props;
-        const age = data.value;
+        const SALDO = data.value;
         const updatedRows = rows.map(row => {
           if (row.id === id) {
-            return { ...row, age: Number(age) };
+            return { ...row, SALDO: Number(SALDO) };
           }
           return row;
         });
@@ -32,50 +49,57 @@ export default function PrintModal({ textPrint, isOpen, handleClose }) {
     [rows, selectionModel],
   );
 
-  const columns = [
-    { field: 'name', headerName: 'Name', width: 180, editable: true },
-    { field: 'age', headerName: 'Age', type: 'number', editable: true },
-  ];
-
   return (
     <Cont>
-      <Modal show={isOpen} onHide={handleClose}>
+      <Modal size="xl" show={isOpen} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Gerar código para impressão</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div style={{ height: 300, width: '100%' }}>
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              checkboxSelection
-              disableSelectionOnClick
-              onSelectionModelChange={newSelection => {
-                setSelectionModel(newSelection.selectionModel);
-                const newSelectionData = rows.filter(row =>
-                  newSelection.selectionModel.includes(row.id),
-                );
-                setDataSelectionModel(newSelectionData);
-              }}
-              selectionModel={selectionModel}
-              onEditCellChangeCommitted={handleEditCellChangeCommitted}
-            />
+          <div style={{ display: 'flex', height: 350 }}>
+            <div style={{ flexGrow: 1 }}>
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                checkboxSelection
+                disableSelectionOnClick
+                onSelectionModelChange={newSelection => {
+                  setSelectionModel(newSelection.selectionModel);
+                  const newSelectionData = rows.filter(row =>
+                    newSelection.selectionModel.includes(row.id),
+                  );
+                  setDataSelectionModel(newSelectionData);
+                }}
+                selectionModel={selectionModel}
+                onEditCellChangeCommitted={handleEditCellChangeCommitted}
+              />
+            </div>
           </div>
-          Teste
-          <Form.Control as="textarea" placeholder="Leave a comment here">
-            {textPrint}
-          </Form.Control>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Fechar
           </Button>
           <Button
-            variant="primary"
-            onClick={() => console.log(dataSelectionModel)}
+            ref={target}
+            variant="warning"
+            onClick={() => {
+              console.log(dataSelectionModel);
+              navigator.clipboard.writeText(
+                generatePrintCode(dataSelectionModel),
+              );
+              setShow(!show);
+            }}
           >
-            Salvar
+            Gerar código
           </Button>
+          <Overlay target={target.current} show={show} placement="top">
+            {props => (
+              <Tooltip {...props}>
+                Copiado para a área de transferência!
+              </Tooltip>
+            )}
+          </Overlay>
         </Modal.Footer>
       </Modal>
     </Cont>

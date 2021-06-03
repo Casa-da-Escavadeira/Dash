@@ -10,7 +10,7 @@ export function generatePrintCode(data) {
       ^FO140,225^A0,35^FD ${item.DESCRICAO.slice(60, 89)}^FS
   
       ^XZ
-      `;
+      `.repeat(item.SALDO);
   });
   return printItens;
 }
