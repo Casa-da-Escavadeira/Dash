@@ -84,11 +84,13 @@ export default function PrintModal({ isOpen, handleClose, pcsData }) {
             ref={target}
             variant="warning"
             onClick={() => {
-              console.log(dataSelectionModel);
               navigator.clipboard.writeText(
                 generatePrintCode(dataSelectionModel),
               );
               setShow(!show);
+              setTimeout(() => {
+                setShow(false);
+              }, 1500);
             }}
           >
             Gerar código
