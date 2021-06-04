@@ -15,12 +15,15 @@ import {
 import { useLocation, Link } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { Container as Cont } from './styles';
+import { generatePrintCode } from '../../utils/generatePrintCode';
 
 import api from '../../services/api';
+import PrintModal from '../../components/PrintModal';
 
 export default function PCs() {
   const [searchValue, setSearchValue] = useState('');
   const [dataPCs, setDataPCs] = useState([]);
+  const [formattedPCs, setFormattedPCs] = useState([]);
   const [sumPCs, setSumPCs] = useState([]);
   const [pcsPlaceholder, setPcsPlaceholder] = useState('Pesquise por um PC...');
   const [filter, setFilter] = useState('Pesquisar por número do PC');
@@ -90,8 +93,33 @@ export default function PCs() {
     [handleSubmit],
   );
 
+  // modal handle
+
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
+  const [textPrint, setTextPrint] = useState('');
+
+  function handleClose() {
+    setIsPrintModalOpen(false);
+  }
+
+  const handlePrintPC = () => {
+    const updatedPCs = dataPCs.map(pc => ({
+      ...pc,
+      id: pc.ITEM,
+    }));
+    setFormattedPCs(updatedPCs.filter(row => row.SALDO > 0));
+    const generatedPrintText = generatePrintCode(dataPCs);
+    setTextPrint(generatedPrintText.join(''));
+    setIsPrintModalOpen(true);
+  };
   return (
     <Cont>
+      <PrintModal
+        textPrint={textPrint}
+        isOpen={isPrintModalOpen}
+        handleClose={handleClose}
+        pcsData={formattedPCs}
+      />
       <Container fluid className="justify-content-center">
         {location.state ? (
           <Row>
@@ -119,7 +147,6 @@ export default function PCs() {
             </Col>
           </Row>
         )}
-
         <h1>Pedidos de Compra</h1>
         <InputGroup className="mb-3" onSubmit={handleSubmit}>
           <FormControl
@@ -149,12 +176,19 @@ export default function PCs() {
               onClick={() => handleSubmit()}
               type="submit"
               variant="outline-warning"
+              style={{ borderRadius: '0 5px 5px 0' }}
             >
               Enviar
             </Button>
           </InputGroup.Append>
+          <Button
+            style={{ marginLeft: 5 }}
+            variant="outline-warning margin-left"
+            onClick={handlePrintPC}
+          >
+            Gerar código para impressão
+          </Button>
         </InputGroup>
-
         <Table responsive striped bordered hover>
           <thead>
             <tr>
@@ -228,7 +262,7 @@ export default function PCs() {
               ))
             ) : (
               <tr>
-                <td colSpan="15">{pcsPlaceholder}</td>
+                <td colSpan="16">{pcsPlaceholder}</td>
               </tr>
             )}
           </tbody>
