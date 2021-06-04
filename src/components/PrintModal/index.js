@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Button, Modal, Overlay, Tooltip } from 'react-bootstrap';
+import { Button, Modal, Form } from 'react-bootstrap';
 import { DataGrid } from '@material-ui/data-grid';
 import { Container as Cont } from './styles';
 import { generatePrintCode } from '../../utils/generatePrintCode';
@@ -7,13 +7,20 @@ import { generatePrintCode } from '../../utils/generatePrintCode';
 export default function PrintModal({ isOpen, handleClose, pcsData }) {
   const [selectionModel, setSelectionModel] = useState([]);
   const [dataSelectionModel, setDataSelectionModel] = useState([]);
+  const [printText, setPrintText] = useState('');
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
     setRows(pcsData);
   }, [pcsData]);
 
-  const [show, setShow] = useState(false);
+  const handlePrintPC = () => {
+    const generatedPrintText = generatePrintCode(dataSelectionModel);
+    setPrintText(generatedPrintText.join(''));
+    console.log(printText);
+  };
+
+  // const [show, setShow] = useState(false);
   const target = useRef(null);
 
   const columns = [
@@ -75,6 +82,7 @@ export default function PrintModal({ isOpen, handleClose, pcsData }) {
               />
             </div>
           </div>
+          {printText !== '' ? (<Form.Control style={{ marginTop: 4 }} as="textarea" rows={3} >{printText}</Form.Control>) : null}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
@@ -83,25 +91,26 @@ export default function PrintModal({ isOpen, handleClose, pcsData }) {
           <Button
             ref={target}
             variant="warning"
-            onClick={() => {
-              navigator.clipboard.writeText(
-                generatePrintCode(dataSelectionModel),
-              );
-              setShow(!show);
-              setTimeout(() => {
-                setShow(false);
-              }, 1500);
-            }}
+            onClick={handlePrintPC
+              // handlePrintPC()
+              // navigator.clipboard.writeText(
+              //   generatePrintCode(dataSelectionModel),
+              // );
+              // setShow(!show);
+              // setTimeout(() => {
+              //   setShow(false);
+              // }, 1500);
+            }
           >
             Gerar código
           </Button>
-          <Overlay target={target.current} show={show} placement="top">
+          {/* <Overlay target={target.current} show={show} placement="top">
             {props => (
               <Tooltip {...props}>
                 Copiado para a área de transferência!
               </Tooltip>
             )}
-          </Overlay>
+          </Overlay> */}
         </Modal.Footer>
       </Modal>
     </Cont>
