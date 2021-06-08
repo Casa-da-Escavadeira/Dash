@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Button, Modal, Form, Overlay, Tooltip } from 'react-bootstrap';
+import { Button, Modal, Overlay, Tooltip } from 'react-bootstrap';
 import { DataGrid } from '@material-ui/data-grid';
 import { Container as Cont } from './styles';
 import { generatePrintCode } from '../../utils/generatePrintCode';
@@ -7,17 +7,18 @@ import { generatePrintCode } from '../../utils/generatePrintCode';
 export default function PrintModal({ isOpen, handleClose, pcsData }) {
   const [selectionModel, setSelectionModel] = useState([]);
   const [dataSelectionModel, setDataSelectionModel] = useState([]);
-  const [printText, setPrintText] = useState('');
   const [rows, setRows] = useState([]);
+
+  function handlePreClose() {
+    setSelectionModel([])
+    handleClose()
+  }
 
   useEffect(() => {
     setRows(pcsData);
   }, [pcsData]);
 
   const handlePrintPC = () => {
-    const generatedPrintText = generatePrintCode(dataSelectionModel);
-    setPrintText(generatedPrintText.join(''));
-    console.log(printText);
     navigator.clipboard.writeText(
       generatePrintCode(dataSelectionModel),
     )
@@ -65,7 +66,7 @@ export default function PrintModal({ isOpen, handleClose, pcsData }) {
 
   return (
     <Cont>
-      <Modal size="xl" show={isOpen} onHide={handleClose}>
+      <Modal size="xl" show={isOpen} onHide={handlePreClose}>
         <Modal.Header closeButton>
           <Modal.Title>Gerar código para impressão</Modal.Title>
         </Modal.Header>
@@ -89,19 +90,15 @@ export default function PrintModal({ isOpen, handleClose, pcsData }) {
               />
             </div>
           </div>
-          {printText !== '' ? (<Form.Control style={{ marginTop: 4 }} as="textarea" rows={3} >{printText}</Form.Control>) : null}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={handlePreClose}>
             Fechar
           </Button>
           <Button
             ref={target}
             variant="warning"
-            onClick={
-              handlePrintPC
-              
-            }
+            onClick={handlePrintPC}
           >
             Gerar código
           </Button>

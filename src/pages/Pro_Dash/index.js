@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Table,
   Button,
@@ -9,6 +9,8 @@ import {
   Badge,
   Spinner,
   Container,
+  Overlay,
+  Tooltip
 } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -16,6 +18,7 @@ import { Link } from 'react-router-dom';
 import { add, format, getWeek, startOfWeek } from 'date-fns';
 import toISODate from '../../utils/toISODate';
 import { Container as Cont } from './styles';
+import { generateSimplePrintCode } from '../../utils/generateSimplePrintCode';
 
 import api from '../../services/api';
 
@@ -319,6 +322,27 @@ export default function Pro_Dash() {
     // eslint-disable-next-line
   }, [location.state]);
 
+  const [show, setShow] = useState(false);
+  const [printQtd, setPrintQtd] = useState(1);
+  const target = useRef(null);
+
+  function handlePrint() {
+    if(productInfo.length !== 0) {
+      const productPrint = {
+        ...productInfo[0],
+        PRODUTO: productInfo[0].CODIGO,
+        SALDO: Number(printQtd)
+      }
+      navigator.clipboard.writeText(
+        generateSimplePrintCode([productPrint])
+      )
+      setShow(!show);
+      setTimeout(() => {
+        setShow(false)
+      }, 1500)
+    }
+  }
+
   return (
     <Cont>
       <Container fluid className="justify-content-center">
@@ -334,32 +358,56 @@ export default function Pro_Dash() {
           </Col>
         </Row>
         <h1>Produtos</h1>
-        <InputGroup className="mb-3">
-          <FormControl
-            placeholder="Código do Produto"
-            aria-label="Código do Produto"
-            aria-describedby="basic-addon2"
-            autoFocus
-            value={productNumber}
-            onKeyPress={keyPressed}
-            onChange={e => setProductNumber(e.target.value)}
-          />
-          <InputGroup.Append>
-            <Button
-              variant="outline-warning"
-              onClick={() => handleSubmit()}
-              type="submit"
-            >
-              Enviar
-            </Button>
-          </InputGroup.Append>
-          <Button
-            style={{ marginLeft: 5 }}
-            variant="outline-warning"
-          >
-            Etiqueta
-          </Button>
-        </InputGroup>
+        <Row>
+          <Col xs={10}>
+            <InputGroup className="mb-3">
+              <FormControl
+                placeholder="Código do Produto"
+                aria-label="Código do Produto"
+                aria-describedby="basic-addon2"
+                autoFocus
+                value={productNumber}
+                onKeyPress={keyPressed}
+                onChange={e => setProductNumber(e.target.value)}
+              />
+              <InputGroup.Append>
+                <Button
+                  variant="outline-warning"
+                  onClick={() => handleSubmit()}
+                  type="submit"
+                  style={{ borderRadius: '0 5px 5px 0' }}
+                >
+                  Enviar
+                </Button>
+              </InputGroup.Append>
+            </InputGroup>
+          </Col>
+          <Col>
+            <InputGroup>
+              <FormControl
+                type="number"
+                placeholder="Qtd"
+                onChange={e => setPrintQtd(e.target.value)}
+              />
+              <InputGroup.Append>
+              <Button
+                ref={target}
+                variant="outline-warning"
+                onClick={handlePrint}
+              >
+                Etiqueta
+              </Button>
+              <Overlay target={target.current} show={show} placement="top">
+                {props => (
+                  <Tooltip {...props}>
+                    Copiado para a área de transferência!
+                  </Tooltip>
+                )}
+              </Overlay>
+              </InputGroup.Append>
+            </InputGroup>
+          </Col>
+        </Row>
         <Row>
           <Col>
             <Table responsive striped bordered hover>
