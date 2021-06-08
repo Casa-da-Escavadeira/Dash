@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v2
@@ -22,7 +22,7 @@ jobs:
     - name: Run build
       run: yarn build
       env:
-        REACT_APP_SERVER: https://dash.agfequipamentos.com.br
+        REACT_APP_SERVER: https://api.agfequipamentos.com.br
       
     - name: Copy project to AGF
       uses: appleboy/scp-action@master
