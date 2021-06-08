@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Button, Modal, Form } from 'react-bootstrap';
+import { Button, Modal, Form, Overlay, Tooltip } from 'react-bootstrap';
 import { DataGrid } from '@material-ui/data-grid';
 import { Container as Cont } from './styles';
 import { generatePrintCode } from '../../utils/generatePrintCode';
@@ -18,9 +18,16 @@ export default function PrintModal({ isOpen, handleClose, pcsData }) {
     const generatedPrintText = generatePrintCode(dataSelectionModel);
     setPrintText(generatedPrintText.join(''));
     console.log(printText);
+    navigator.clipboard.writeText(
+      generatePrintCode(dataSelectionModel),
+    )
+    setShow(!show);
+    setTimeout(() => {
+      setShow(false)
+    }, 1500)
   };
 
-  // const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false);
   const target = useRef(null);
 
   const columns = [
@@ -91,26 +98,20 @@ export default function PrintModal({ isOpen, handleClose, pcsData }) {
           <Button
             ref={target}
             variant="warning"
-            onClick={handlePrintPC
-              // handlePrintPC()
-              // navigator.clipboard.writeText(
-              //   generatePrintCode(dataSelectionModel),
-              // );
-              // setShow(!show);
-              // setTimeout(() => {
-              //   setShow(false);
-              // }, 1500);
+            onClick={
+              handlePrintPC
+              
             }
           >
             Gerar código
           </Button>
-          {/* <Overlay target={target.current} show={show} placement="top">
+          <Overlay target={target.current} show={show} placement="top">
             {props => (
               <Tooltip {...props}>
                 Copiado para a área de transferência!
               </Tooltip>
             )}
-          </Overlay> */}
+          </Overlay>
         </Modal.Footer>
       </Modal>
     </Cont>

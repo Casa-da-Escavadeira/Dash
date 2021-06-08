@@ -353,6 +353,12 @@ export default function Pro_Dash() {
               Enviar
             </Button>
           </InputGroup.Append>
+          <Button
+            style={{ marginLeft: 5 }}
+            variant="outline-warning"
+          >
+            Etiqueta
+          </Button>
         </InputGroup>
         <Row>
           <Col>
