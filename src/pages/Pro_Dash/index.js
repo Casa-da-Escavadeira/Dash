@@ -418,6 +418,7 @@ export default function Pro_Dash() {
                   <th>PP</th>
                   <th>LE</th>
                   <th>EST_SEG</th>
+                  <th>LOC</th>
                 </tr>
               </thead>
               <tbody>
@@ -429,11 +430,12 @@ export default function Pro_Dash() {
                       <td>{product.PP}</td>
                       <td>{product.LE}</td>
                       <td>{product.ESTSEG}</td>
+                      <td>{product.LOCACAO}</td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="5">{codigoPlaceholder}</td>
+                    <td colSpan="6">{codigoPlaceholder}</td>
                   </tr>
                 )}
               </tbody>
@@ -906,7 +908,7 @@ export default function Pro_Dash() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7">{pcPlaceholder}</td>
+                    <td colSpan="8">{pcPlaceholder}</td>
                   </tr>
                 )}
               </tbody>

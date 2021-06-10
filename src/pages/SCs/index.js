@@ -166,7 +166,7 @@ export default function SCs() {
               ))
             ) : (
               <tr>
-                <td colSpan="11">{scsPlaceholder}</td>
+                <td colSpan="12">{scsPlaceholder}</td>
               </tr>
             )}
           </tbody>
