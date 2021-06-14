@@ -40,7 +40,7 @@ export default function EstoquesGer() {
       }
 
       const pcs = await api.get(
-        `/pcs?filial=0101&finalizado=true&produto=9900001327',%20'9900000777',%20'9900000778',%20'9900001100',%20'9900001718',%20'9900000786',%20'9900000821',%20'9900001101`,
+        `/pcs?filial=0101&legenda=PENDENTE',%20'ATENDIDO%20PARCIALMENTE&produto=9900001327',%20'9900000777',%20'9900000778',%20'9900001100',%20'9900001718',%20'9900000786',%20'9900000821',%20'9900001101`,
       );
       if (pcs.data.length === 0) {
         setPcPlaceholder('Parece que não há PCs...');
@@ -49,7 +49,7 @@ export default function EstoquesGer() {
       }
 
       const scs = await api.get(
-        `/scs?filial=0101&finalizado=true&produto=9900001327',%20'9900000777',%20'9900000778',%20'9900001100',%20'9900001718',%20'9900000786',%20'9900000821',%20'9900001101`,
+        `/scs?filial=0101&aberto=true&produto=9900001327',%20'9900000777',%20'9900000778',%20'9900001100',%20'9900001718',%20'9900000786',%20'9900000821',%20'9900001101`,
       );
       if (scs.data.length === 0) {
         setScPlaceholder('Parece que não há PCs...');

@@ -19,6 +19,7 @@ import { add, format, getWeek, startOfWeek } from 'date-fns';
 import toISODate from '../../utils/toISODate';
 import { Container as Cont } from './styles';
 import { generateSimplePrintCode } from '../../utils/generateSimplePrintCode';
+import LastPCsModal from '../../components/LastPCsModal'
 
 import api from '../../services/api';
 
@@ -234,7 +235,7 @@ export default function Pro_Dash() {
       }
 
       const response6 = await api.get(
-        `/pcs?filial=0101&finalizado=true&produto=${product}`,
+        `/pcs?filial=0101&legenda=PENDENTE',%20'ATENDIDO%20PARCIALMENTE&produto=${product}`,
       );
       if (response6.data.length === 0) {
         setPcPlaceholder('Parece que não há PCs...');
@@ -252,7 +253,7 @@ export default function Pro_Dash() {
       setPCs(reponseUpdated6);
 
       const response7 = await api.get(
-        `/scs?filial=0101&finalizado=true&produto=${product}`,
+        `/scs?filial=0101&aberto=true&produto=${product}`,
       );
       if (response7.data.length === 0) {
         setScPlaceholder('Parece que não há SCs...');
@@ -343,6 +344,35 @@ export default function Pro_Dash() {
     }
   }
 
+  // LastPCsModal
+  const [isPCModalOpen, setIsPCModalOpen] = useState(false);
+  const [pcsData, setPcsData] = useState([]);
+
+  function handlePCModalClose() {
+    setIsPCModalOpen(false);
+  }
+
+  const handlePCModal = async () => {
+    let product = productNumber.toUpperCase().trim();
+
+    const response = await api.get(
+      `/pcs?filial=0101&produto=${product}&legenda=PEDIDO%20ATENDIDO',%20'ATENDIDO%20PARCIALMENTE&top=10&desc=true`,
+    );
+
+    const pcsFormatted = response.data.map(pc => {
+      return {
+        ...pc,
+        PRECO: new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }).format(pc.PRECO)
+      }
+    })
+
+    setPcsData(pcsFormatted)
+    setIsPCModalOpen(true);
+  };
+
   return (
     <Cont>
       <Container fluid className="justify-content-center">
@@ -359,7 +389,7 @@ export default function Pro_Dash() {
         </Row>
         <h1>Produtos</h1>
         <Row>
-          <Col xs={10}>
+          <Col xs={8}>
             <InputGroup className="mb-3">
               <FormControl
                 placeholder="Código do Produto"
@@ -381,6 +411,20 @@ export default function Pro_Dash() {
                 </Button>
               </InputGroup.Append>
             </InputGroup>
+          </Col>
+          <Col>
+            <Button
+              variant="outline-warning"
+              onClick={handlePCModal}
+              type="submit"
+            >
+              Ultimos pedidos
+            </Button>
+            <LastPCsModal 
+              isOpen={isPCModalOpen}
+              handleClose={handlePCModalClose}
+              pcsData={pcsData}
+            />
           </Col>
           <Col>
             <InputGroup>
@@ -578,6 +622,10 @@ export default function Pro_Dash() {
                 )}
               </tbody>
             </Table>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
           </Col>
         </Row>
         <Row>
@@ -864,6 +912,7 @@ export default function Pro_Dash() {
         <Row>
           <Col>
             <h5>Pedidos de Compra</h5>
+
             <Table responsive striped bordered hover>
               <thead>
                 <tr>

@@ -47,7 +47,7 @@ export default function PCs() {
       }
       if (filterVar === 'CNPJ') {
         response = await api.get(
-          `/pcs?filial=0101&finalizado=true&&cnpj=${searchVar}`,
+          `/pcs?filial=0101&legenda=PENDENTE',%20'ATENDIDO%20PARCIALMENTE&&cnpj=${searchVar}`,
         );
         if (response.data.length === 0) {
           setPcsPlaceholder('Parece que não há um PC com esse CNPJ...');
