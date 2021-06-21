@@ -10,7 +10,8 @@ import {
   Spinner,
   Container,
   Overlay,
-  Tooltip
+  Tooltip,
+  Alert
 } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -486,6 +487,15 @@ export default function Pro_Dash() {
             </Table>
           </Col>
         </Row>
+        {(productInfo.length !== 0 && (productInfo[0].BLOQUEADO === true)) ? (
+          <Row>
+            <Col>
+              <Alert variant={'danger'}>
+                Este item está bloqueado!
+              </Alert>
+            </Col>
+          </Row>
+        ) : null}
         <Row>
           <Col>
             <Table responsive striped bordered hover>

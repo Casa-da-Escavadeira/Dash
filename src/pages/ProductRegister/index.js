@@ -10,6 +10,7 @@ import {
   Col,
   Spinner,
   Container,
+  Badge
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { FiLogIn, FiArrowLeft } from 'react-icons/fi';
@@ -116,7 +117,8 @@ export default function ProductRegister() {
               products.map(product => (
                 <tr key={product.CODIGO}>
                   <td>{product.CODIGO}</td>
-                  <td>{product.DESCRICAO}</td>
+                  <td>{product.DESCRICAO} - {product.BLOQUEADO === true ? 
+                  <Badge variant={'danger'}>Item bloqueado!</Badge> : null}</td>
                   <td>{product.UM}</td>
                   <td>
                     <Link
