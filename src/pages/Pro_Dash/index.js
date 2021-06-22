@@ -668,7 +668,7 @@ export default function Pro_Dash() {
                           {format(
                             startOfWeek(
                               add(new Date(), {
-                                weeks: weekNumber - currentWeek,
+                                weeks: weekNumber + 1 - currentWeek,
                               }),
                               { weekStartsOn: 5 },
                             ),
