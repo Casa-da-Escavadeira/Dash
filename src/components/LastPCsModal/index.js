@@ -22,7 +22,7 @@ export default function LastPCsModal({ isOpen, handleClose, pcsData }) {
                 <th>QTD_ENT</th>
                 <th>SALDO</th>
                 <th>PREÇO</th>
-                <th>ENTREGA</th>
+                <th>ENTREGUE</th>
                 <th>FORN</th>
               </tr>
             </thead>
@@ -52,7 +52,7 @@ export default function LastPCsModal({ isOpen, handleClose, pcsData }) {
                     <td>{pc.QTD_ENT}</td>
                     <td>{pc.SALDO}</td>
                     <td>{pc.PRECO}</td>
-                    <td>{pc.ENTREGA}</td>
+                    <td>{pc.ENTREGUE}</td>
                     <td>{pc.DESC_FORN}</td>
                   </tr>
                 ))
