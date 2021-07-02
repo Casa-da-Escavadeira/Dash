@@ -16,7 +16,7 @@ import {
 import { useLocation } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
-import { add, format, getWeek, startOfWeek } from 'date-fns';
+import { add, format, getMonth, getWeek, startOfWeek } from 'date-fns';
 import toISODate from '../../utils/toISODate';
 import { Container as Cont } from './styles';
 import { generateSimplePrintCode } from '../../utils/generateSimplePrintCode';
@@ -38,6 +38,8 @@ export default function Pro_Dash() {
   const [OPs, setOPs] = useState([]);
   const [EMPs, setEMPs] = useState([]);
   const [OUs, setOUs] = useState([]);
+  const [Average, setAverage] = useState([]);
+
   const [codigoPlaceholder, setCodigoPlaceholder] = useState(
     'Pesquise por um código...',
   );
@@ -54,6 +56,9 @@ export default function Pro_Dash() {
     'Pesquise por um código...',
   );
   const [empPlaceholder, setEmpPlaceholder] = useState(
+    'Pesquise por um código...',
+  );
+  const [averagePlaceholder, setAveragePlaceholder] = useState(
     'Pesquise por um código...',
   );
 
@@ -135,6 +140,7 @@ export default function Pro_Dash() {
       setOPs([]);
       setOUs([]);
       setEMPs([]);
+      setAverage([]);
 
       setCodigoPlaceholder(
         <Spinner animation="border" size="sm" variant="warning" />,
@@ -170,6 +176,9 @@ export default function Pro_Dash() {
         <Spinner animation="border" size="sm" variant="warning" />,
       );
       setOuPlaceholder(
+        <Spinner animation="border" size="sm" variant="warning" />,
+      );
+      setAveragePlaceholder(
         <Spinner animation="border" size="sm" variant="warning" />,
       );
 
@@ -304,6 +313,11 @@ export default function Pro_Dash() {
         return itemUpdated;
       });
       setEMPs(reponseUpdated8);
+
+      const response10 = await api.get(
+        `/average?filial=0101&produto=${product}`,
+      );
+      setAverage(response10.data[0]);
     },
     [productNumber, currentWeek],
   );
@@ -373,6 +387,13 @@ export default function Pro_Dash() {
     setPcsData(pcsFormatted)
     setIsPCModalOpen(true);
   };
+
+  // average consumption
+  const monthArray = [1,2,3,4,5,6,7,8,9,10,11,12];
+  const month2DigArray = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+  const currentMonth = getMonth(new Date()) + 1;
+  console.log(currentMonth);
+  console.log(Average);
 
   return (
     <Cont>
@@ -482,7 +503,7 @@ export default function Pro_Dash() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6">{codigoPlaceholder}</td>
+                    <td colSpan="7">{codigoPlaceholder}</td>
                   </tr>
                 )}
               </tbody>
@@ -638,6 +659,33 @@ export default function Pro_Dash() {
         </Row>
         <Row>
           <Col>
+          <h5>Consumo últimos 12 meses</h5>
+            <Table responsive striped bordered hover>
+              <thead>
+                <tr>
+                  {monthArray.map(month => {
+                    return (
+                      <th>{(currentMonth + month - 1) > 12 ? `${currentMonth + month - 13}` : `${currentMonth + month - 1}`}</th>
+                    )
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {Average.length !== 0 ? (
+                  <tr>
+                    {monthArray.map(month => {
+                      return (
+                        <td>{(currentMonth + month - 1) > 12 ? Average?.[`Q${month2DigArray[currentMonth + month - 14]}`] : Average?.[`Q${month2DigArray[currentMonth + month - 2]}`]}</td>
+                      )
+                    })}
+                  </tr>
+                  ) : (
+                  <tr>
+                    <td colSpan="12">{averagePlaceholder}</td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
           </Col>
         </Row>
         <Row>
