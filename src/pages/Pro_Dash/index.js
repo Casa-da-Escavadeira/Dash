@@ -317,7 +317,23 @@ export default function Pro_Dash() {
       const response10 = await api.get(
         `/average?filial=0101&produto=${product}`,
       );
-      setAverage(response10.data[0]);
+
+      const reponseUpdated10 = response10.data.map(item => {
+        const itemUpdated = {
+          ...item,
+          WEEK:
+            getWeek(toISODate(item.ENTREGA)) < currentWeek
+              ? 'ATR'
+              : getWeek(toISODate(item.ENTREGA)),
+        };
+        return itemUpdated;
+      });
+
+      if (response10.data.length === 0) {
+        setAveragePlaceholder('Parece que não há consumo...');
+      } else {
+        setAverage(response10.data[0]);
+      }
     },
     [productNumber, currentWeek],
   );
@@ -671,7 +687,7 @@ export default function Pro_Dash() {
                 </tr>
               </thead>
               <tbody>
-                {Average.length !== 0 ? (
+                {Average?.length !== 0 ? (
                   <tr>
                     {monthArray.map(month => {
                       return (
