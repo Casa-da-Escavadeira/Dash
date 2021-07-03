@@ -318,21 +318,43 @@ export default function Pro_Dash() {
         `/average?filial=0101&produto=${product}`,
       );
 
-      const reponseUpdated10 = response10.data.map(item => {
-        const itemUpdated = {
-          ...item,
-          WEEK:
-            getWeek(toISODate(item.ENTREGA)) < currentWeek
-              ? 'ATR'
-              : getWeek(toISODate(item.ENTREGA)),
-        };
-        return itemUpdated;
-      });
-
       if (response10.data.length === 0) {
         setAveragePlaceholder('Parece que não há consumo...');
       } else {
-        setAverage(response10.data[0]);
+        const reponseUpdated10 = response10.data.map(item => {
+          const itemUpdated = {
+            ...item,
+            average: 
+              (item.Q01 +
+              item.Q02 +
+              item.Q03 +
+              item.Q04 +
+              item.Q05 +
+              item.Q06 +
+              item.Q07 +
+              item.Q08 +
+              item.Q09 +
+              item.Q10 +
+              item.Q11 +
+              item.Q12) / 12,
+            total: 
+              item.Q01 +
+              item.Q02 +
+              item.Q03 +
+              item.Q04 +
+              item.Q05 +
+              item.Q06 +
+              item.Q07 +
+              item.Q08 +
+              item.Q09 +
+              item.Q10 +
+              item.Q11 +
+              item.Q12,
+          };
+          return itemUpdated;
+        });
+
+        setAverage(reponseUpdated10[0]);
       }
     },
     [productNumber, currentWeek],
@@ -684,6 +706,8 @@ export default function Pro_Dash() {
                       <th>{(currentMonth + month - 1) > 12 ? `${currentMonth + month - 13}` : `${currentMonth + month - 1}`}</th>
                     )
                   })}
+                  <th>MÉDIA</th>
+                  <th>TOTAL</th>
                 </tr>
               </thead>
               <tbody>
@@ -694,10 +718,12 @@ export default function Pro_Dash() {
                         <td>{(currentMonth + month - 1) > 12 ? Average?.[`Q${month2DigArray[currentMonth + month - 14]}`] : Average?.[`Q${month2DigArray[currentMonth + month - 2]}`]}</td>
                       )
                     })}
+                    <td>{Average.average}</td>
+                    <td>{Average.total}</td>
                   </tr>
                   ) : (
                   <tr>
-                    <td colSpan="12">{averagePlaceholder}</td>
+                    <td colSpan="14">{averagePlaceholder}</td>
                   </tr>
                 )}
               </tbody>
