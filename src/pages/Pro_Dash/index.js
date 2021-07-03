@@ -325,18 +325,20 @@ export default function Pro_Dash() {
           const itemUpdated = {
             ...item,
             average: 
-              (item.Q01 +
-              item.Q02 +
-              item.Q03 +
-              item.Q04 +
-              item.Q05 +
-              item.Q06 +
-              item.Q07 +
-              item.Q08 +
-              item.Q09 +
-              item.Q10 +
-              item.Q11 +
-              item.Q12) / 12,
+              Math.round((
+                ((item.Q01 +
+                  item.Q02 +
+                  item.Q03 +
+                  item.Q04 +
+                  item.Q05 +
+                  item.Q06 +
+                  item.Q07 +
+                  item.Q08 +
+                  item.Q09 +
+                  item.Q10 +
+                  item.Q11 +
+                  item.Q12) / 12)
+                + Number.EPSILON) * 100) / 100,
             total: 
               item.Q01 +
               item.Q02 +
