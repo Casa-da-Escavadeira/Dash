@@ -430,8 +430,6 @@ export default function Pro_Dash() {
   const monthArray = [1,2,3,4,5,6,7,8,9,10,11,12];
   const month2DigArray = ['01','02','03','04','05','06','07','08','09','10','11','12'];
   const currentMonth = getMonth(new Date()) + 1;
-  console.log(currentMonth);
-  console.log(Average);
 
   return (
     <Cont>

@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { Container as Cont } from './styles';
 
 export default function LastPCsModal({ isOpen, handleClose, pcsData }) {
-  console.log(pcsData)
   return (
     <Cont>
       <Modal size="xl" show={isOpen} onHide={handleClose}>
