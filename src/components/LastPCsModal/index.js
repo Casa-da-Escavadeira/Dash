@@ -57,7 +57,7 @@ export default function LastPCsModal({ isOpen, handleClose, pcsData }) {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="8">Algo deu errado</td>
+                  <td colSpan="9">Algo deu errado</td>
                 </tr>
               )}
             </tbody>

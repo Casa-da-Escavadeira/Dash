@@ -73,12 +73,17 @@ export default function Pro_Dash() {
   const [sumPCs, setSumPCs] = useState('');
   const [sumOPs, setSumOPs] = useState('');
   const [saldoPrev, setSaldoPrev] = useState('');
+  const [lastThreeMonthAverage, setlastThreeMonthAverage] = useState(0);
   const location = useLocation();
   const currentWeek = getWeek(new Date());
   const weeks = [
     'ATR',
     ...Array.from({ length: 12 }, (_, i) => i + currentWeek),
   ];
+  // average consumption
+  const monthArray = [1,2,3,4,5,6,7,8,9,10,11,12];
+  const month2DigArray = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+  const currentMonth = getMonth(new Date()) + 1;
 
   useEffect(() => {
     const mapEmpenhos = EMPs.map(emp => emp.SALDO);
@@ -356,10 +361,22 @@ export default function Pro_Dash() {
           return itemUpdated;
         });
 
+        const lastThreeMonthAverageReduce = Math.round(((monthArray.reduce((accumulator, month) => {
+          accumulator += (
+            (currentMonth + month - 1) > 15 
+              ? reponseUpdated10[0]?.[`Q${month2DigArray[currentMonth + month - 14]}`] 
+              : 0
+          ) / 3
+          return accumulator;
+        }, 0)
+        ) + Number.EPSILON) * 100) / 100;
+
+        setlastThreeMonthAverage(lastThreeMonthAverageReduce);
+
         setAverage(reponseUpdated10[0]);
       }
     },
-    [productNumber, currentWeek],
+    [productNumber, currentWeek, currentMonth, month2DigArray, monthArray],
   );
 
   // submit on press Enter
@@ -427,11 +444,6 @@ export default function Pro_Dash() {
     setPcsData(pcsFormatted)
     setIsPCModalOpen(true);
   };
-
-  // average consumption
-  const monthArray = [1,2,3,4,5,6,7,8,9,10,11,12];
-  const month2DigArray = ['01','02','03','04','05','06','07','08','09','10','11','12'];
-  const currentMonth = getMonth(new Date()) + 1;
 
   return (
     <Cont>
@@ -706,7 +718,7 @@ export default function Pro_Dash() {
                       <th>{(currentMonth + month - 1) > 12 ? `${currentMonth + month - 13}` : `${currentMonth + month - 1}`}</th>
                     )
                   })}
-                  <th>MÉDIA</th>
+                  <th>MÉDIA ÚLT 3 MESES</th>
                   <th>TOTAL</th>
                 </tr>
               </thead>
@@ -715,10 +727,12 @@ export default function Pro_Dash() {
                   <tr>
                     {monthArray.map(month => {
                       return (
-                        <td>{(currentMonth + month - 1) > 12 ? Average?.[`Q${month2DigArray[currentMonth + month - 14]}`] : Average?.[`Q${month2DigArray[currentMonth + month - 2]}`]}</td>
+                        <td>{(currentMonth + month - 1) > 12 
+                          ? Average?.[`Q${month2DigArray[currentMonth + month - 14]}`] 
+                          : Average?.[`Q${month2DigArray[currentMonth + month - 2]}`]}</td>
                       )
                     })}
-                    <td>{Average.average}</td>
+                    <td>{lastThreeMonthAverage}</td>
                     <td>{Average.total}</td>
                   </tr>
                   ) : (
