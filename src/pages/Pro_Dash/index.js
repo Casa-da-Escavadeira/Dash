@@ -428,7 +428,7 @@ export default function Pro_Dash() {
     let product = productNumber.toUpperCase().trim();
 
     const response = await api.get(
-      `/pcs?filial=0101&produto=${product}&legenda=PEDIDO%20ATENDIDO',%20'ATENDIDO%20PARCIALMENTE&top=10&desc=true`,
+      `inputdocs?filial=0101&produto=${product}&top=10&desc=true`,
     );
 
     const pcsFormatted = response.data.map(pc => {
