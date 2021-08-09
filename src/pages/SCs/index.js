@@ -34,7 +34,7 @@ export default function SCs() {
       if (search > 0) {
         sc = search.toUpperCase().trim();
       }
-      const response = await api.get(`/scs?filial=0101&sc=${sc}`, {});
+      const response = await api.get(`/scs?filial=0201&sc=${sc}`, {});
       if (response.data.length === 0) {
         setScsPlaceholder('Parece que não há uma SC com esse número...');
       }

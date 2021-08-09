@@ -188,7 +188,7 @@ export default function Pro_Dash() {
       );
 
       const productInfoResponse = await api.get(
-        `/register?filial=0101&produto=${product}`,
+        `/register?filial=0201&produto=${product}`,
       );
       if (productInfoResponse.data.length === 0) {
         setCodigoPlaceholder('Parece que esse código não existe...');
@@ -196,7 +196,7 @@ export default function Pro_Dash() {
       setProductInfo(productInfoResponse.data);
 
       const response = await api.get(
-        `/estoques?filial=0101&produto=${product}&armazem=01`,
+        `/estoques?filial=0201&produto=${product}&armazem=01`,
       );
       if (response.data.length === 0) {
         setAlmoxarifados([{ SALDO: 0 }]);
@@ -205,7 +205,7 @@ export default function Pro_Dash() {
       }
 
       const response2 = await api.get(
-        `/estoques?filial=0101&produto=${product}&armazem=99`,
+        `/estoques?filial=0201&produto=${product}&armazem=99`,
       );
       if (response2.data.length === 0) {
         setSupermercados([{ SALDO: 0 }]);
@@ -214,7 +214,7 @@ export default function Pro_Dash() {
       }
 
       const response3 = await api.get(
-        `/estoques?filial=0101&produto=${product}&armazem=04`,
+        `/estoques?filial=0201&produto=${product}&armazem=04`,
       );
       if (response3.data.length === 0) {
         setQuebrados([{ SALDO: 0 }]);
@@ -223,7 +223,7 @@ export default function Pro_Dash() {
       }
 
       const response4 = await api.get(
-        `/estoques?filial=0101&produto=${product}&armazem=03`,
+        `/estoques?filial=0201&produto=${product}&armazem=03`,
       );
       if (response4.data.length === 0) {
         setPos([{ SALDO: 0 }]);
@@ -241,7 +241,7 @@ export default function Pro_Dash() {
       }
 
       const stockWarehouse06Data = await api.get(
-        `/estoques?filial=0101&produto=${product}&armazem=06`,
+        `/estoques?filial=0201&produto=${product}&armazem=06`,
       );
       if (stockWarehouse06Data.data.length === 0) {
         setStockWarehouse06([{ SALDO: 0 }]);
@@ -250,7 +250,7 @@ export default function Pro_Dash() {
       }
 
       const response6 = await api.get(
-        `/pcs?filial=0101&legenda=PENDENTE',%20'ATENDIDO%20PARCIALMENTE&produto=${product}`,
+        `/pcs?filial=0201&legenda=PENDENTE',%20'ATENDIDO%20PARCIALMENTE&produto=${product}`,
       );
       if (response6.data.length === 0) {
         setPcPlaceholder('Parece que não há PCs...');
@@ -268,7 +268,7 @@ export default function Pro_Dash() {
       setPCs(reponseUpdated6);
 
       const response7 = await api.get(
-        `/scs?filial=0101&aberto=true&produto=${product}`,
+        `/scs?filial=0201&aberto=true&produto=${product}`,
       );
       if (response7.data.length === 0) {
         setScPlaceholder('Parece que não há SCs...');
@@ -286,7 +286,7 @@ export default function Pro_Dash() {
       setSCs(reponseUpdated7);
 
       const opsRecieved = await api.get(
-        `/ops?filial=0101&produto=${product}&fechado=false`,
+        `/ops?filial=0201&produto=${product}&fechado=false`,
         {},
       );
       if (opsRecieved.data.length === 0) {
@@ -294,14 +294,14 @@ export default function Pro_Dash() {
       }
       setOPs(opsRecieved.data);
 
-      const response9 = await api.get(`/ou?filial=0101&produto=${product}`, {});
+      const response9 = await api.get(`/ou?filial=0201&produto=${product}`, {});
       if (response9.data.length === 0) {
         setOuPlaceholder('Parece que não é usado em nenhum lugar...');
       }
       setOUs(response9.data);
 
       const response8 = await api.get(
-        `/emp?filial=0101&produto=${product}`,
+        `/emp?filial=0201&produto=${product}`,
         {},
       );
       if (response8.data.length === 0) {
@@ -320,7 +320,7 @@ export default function Pro_Dash() {
       setEMPs(reponseUpdated8);
 
       const response10 = await api.get(
-        `/average?filial=0101&produto=${product}`,
+        `/average?filial=0201&produto=${product}`,
       );
 
       if (response10.data.length === 0) {
@@ -428,7 +428,7 @@ export default function Pro_Dash() {
     let product = productNumber.toUpperCase().trim();
 
     const response = await api.get(
-      `inputdocs?filial=0101&produto=${product}&top=10&desc=true`,
+      `inputdocs?filial=0201&produto=${product}&top=10&desc=true`,
     );
 
     const pcsFormatted = response.data.map(pc => {

@@ -35,11 +35,11 @@ export default function ProductRegister() {
     );
     if (filter === 'Código') {
       response = await api.get(
-        `/register?filial=0101&busca_cod_produto=${search}`,
+        `/register?filial=0201&busca_cod_produto=${search}`,
       );
     } else {
       response = await api.get(
-        `/register?filial=0101&busca_desc_produto=${search}`,
+        `/register?filial=0201&busca_desc_produto=${search}`,
       );
     }
     if (response.data.length === 0) {
