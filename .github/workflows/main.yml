@@ -44,4 +44,4 @@ jobs:
         script: |
           cd ~/app/cde/Dash
           yarn
-          pm2 restart Dash
+          pm2 restart cde-dash
