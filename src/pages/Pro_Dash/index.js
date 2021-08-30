@@ -363,7 +363,7 @@ export default function Pro_Dash() {
 
         const lastThreeMonthAverageReduce = Math.round(((monthArray.reduce((accumulator, month) => {
           accumulator += (
-            (currentMonth + month - 1) > 15 
+            (currentMonth + month - 1) > 16 
               ? reponseUpdated10[0]?.[`Q${month2DigArray[currentMonth + month - 14]}`] 
               : 0
           ) / 3
