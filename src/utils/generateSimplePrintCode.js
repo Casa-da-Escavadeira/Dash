@@ -3,7 +3,7 @@ export function generateSimplePrintCode(data) {
     return `
     ^XA
     
-    ^FO20,25^GB570,255,8^FS
+    ^FO20,25^GB590,255,8^FS
     ^FO35,55^A0,55^FD ${item.PRODUTO}^FS
     )}^FS
     ^FO35,145^A0,35^FD ${item.DESCRICAO.slice(0, 30)}^FS

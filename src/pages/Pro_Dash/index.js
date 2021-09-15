@@ -27,7 +27,7 @@ import api from '../../services/api';
 export default function Pro_Dash() {
   const [productNumber, setProductNumber] = useState('');
   const [almoxarifados, setAlmoxarifados] = useState([]);
-  const [supermecados, setSupermercados] = useState([]);
+  const [supermercados, setSupermercados] = useState([]);
   const [quebrados, setQuebrados] = useState([]);
   const [pos, setPos] = useState([]);
   const [vix, setVix] = useState([]);
@@ -597,14 +597,14 @@ export default function Pro_Dash() {
             <Table responsive striped bordered hover>
               <thead>
                 <tr>
-                  <th>SUPERMECADO</th>
+                  <th>SUPERMERCADO</th>
                 </tr>
               </thead>
               <tbody>
-                {supermecados.length !== 0 ? (
-                  supermecados.map(supermecado => (
+                {supermercados.length !== 0 ? (
+                  supermercados.map(supermercado => (
                     <tr>
-                      <td>{supermecado.SALDO}</td>
+                      <td>{supermercado.SALDO}</td>
                     </tr>
                   ))
                 ) : (
