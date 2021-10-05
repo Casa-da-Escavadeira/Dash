@@ -107,7 +107,7 @@ export default function PCs() {
       ...pc,
       id: pc.ITEM,
     }));
-    setFormattedPCs(updatedPCs.filter(row => row.SALDO > 0));
+    setFormattedPCs(updatedPCs.filter(row => row.SALDO >= 0));
     const generatedPrintText = generatePrintCode(dataPCs);
     setTextPrint(generatedPrintText.join(''));
     setIsPrintModalOpen(true);
