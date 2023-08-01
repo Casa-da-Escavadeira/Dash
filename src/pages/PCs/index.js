@@ -27,6 +27,7 @@ export default function PCs() {
   const [sumPCs, setSumPCs] = useState([]);
   const [pcsPlaceholder, setPcsPlaceholder] = useState('Pesquise por um PC...');
   const [filter, setFilter] = useState('Pesquisar por número do PC');
+  const [filial, setFilial] = useState('0201')
   const location = useLocation();
 
   const handleSubmit = useCallback(
@@ -113,6 +114,20 @@ export default function PCs() {
     setTextPrint(generatedPrintText.join(''));
     setIsPrintModalOpen(true);
   };
+
+  const handleFilialPlaceholder = useCallback((filial) => {
+    switch (filial) {
+      case '0201':
+        return 'Matriz'
+      case '0202':
+        return 'Filial SP'
+      case '0203':
+        return 'Filial SC'
+      default:
+        return 'Matriz'
+    }
+  }, [])
+
   return (
     <Cont>
       <PrintModal
@@ -172,6 +187,24 @@ export default function PCs() {
               CNPJ
             </Dropdown.Item>
           </DropdownButton>
+
+          <DropdownButton
+            as={InputGroup.Append}
+            variant="outline-warning"
+            title={handleFilialPlaceholder(filial)}
+            id="input-group-dropdown-2"
+          >
+            <Dropdown.Item onClick={() => setFilial('0201')}>
+              Matriz
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => setFilial('0202')}>
+              Filial SP
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => setFilial('0203')}>
+              Filial SC
+            </Dropdown.Item>
+          </DropdownButton>
+
           <InputGroup.Append>
             <Button
               onClick={() => handleSubmit()}
